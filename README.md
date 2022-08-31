@@ -6,25 +6,24 @@ modified [Sokoban](https://en.wikipedia.org/wiki/Sokoban) game.
 
 ## Grading Policy
 
-We believe that this is the mostly interested part so we put it at the very frist.
+We explain the grading policy before task specification so that you will not miss it.
 
-Basically, instead of manually reading and running the game, we have a set of automated test cases to validate your
-implementations.
-Some of the test cases are available to you (aka. **public test cases**) with the skeleton code so that you can check
-whether your implementation if correct.
+Your implemenation will be validated by a set of test cases.
+Some of the them are available to you (aka. **public test cases**) with the skeleton code so that you can check
+whether your implementation supports the basic scenarios.
 Passing all these test cases does not mean that you get full marks because we have some **hidden test cases** which
 further validate the implementations that are not covered by the public test cases (e.g., some corner cases).
 
 | **Item**                                        | **Ratio** | **Notes**                                                                |
-|-------------------------------------------------|----------|--------------------------------------------------------------------------|
-| Keep your GitHub repository private             | 5%       | You must keep your repository **private** at all times.                  |
-| Having at least three commits in different days | 5%       | You should commit three times during different days in your repository.  |
-| Code style                                      | 10%      | You get 10% by default, and every 5 warnings from CheckStyle deducts 1%. |
-| Public test cases                               | 15%      | `(# of passing tests / # of provided tests) * 15%`                       |
-| Hidden test cases                               | 65%      | `(# of passing tests / # of hidden tests) * 65%`                         |
+|-------------------------------------------------|-----------|--------------------------------------------------------------------------|
+| Keeping your GitHub repository private          | 5%        | You must keep your repository **private** at all times.                  |
+| Having at least three commits on different days | 5%        | You should commit three times during different days in your repository.  |
+| Code style                                      | 10%       | You get 10% by default, and every 5 warnings from CheckStyle deducts 1%. |
+| Public test cases                               | 15%       | `(# of passing tests / # of provided tests) * 15%`                       |
+| Hidden test cases                               | 65%       | `(# of passing tests / # of hidden tests) * 65%`                         |
 
 
-Please try to compile your code with `gralde build` before submission.  You will not get any marks of public/hidden test cases if your code does not compile.
+Please try to compile your code with `gradle build` before submission.  You will not get any marks of public/hidden test cases if your code does not compile.
 
 ## Implementing the Game
 
@@ -37,7 +36,7 @@ You are encouraged to:
 
 You are not allowed to:
 
-- Remove or modify the test code (in `scc/test/java`) provided by us.
+- Remove or modify the test code (in `src/test/java`) provided by us.
 - Delete or change the signature (name, arguments, visibility, etc.) of any given classes or methods in the skeleton code. 
 - Share your implementation with your classmates.
 
@@ -52,25 +51,25 @@ For example, a student CHAN, Tai Man with ITSC ID `tmchanaa` having a repository
 https://github.com/tai-man-chan/COMP3021-PA1
 ```
 
-Note that we are using automatic programs to parse your submission instead of reading the submitted file manually.
-Please **DO NOT add extra explanations** to the file since they will stop us from correctly processing your submission.
-Feel free to send us an email if you need to clearify anything about your submission.
+Note that we are using automatic scripts to process your submission.
+**DO NOT add extra explanation** to the file; otherwise they will prevent our scripts from correctly processing your submission.
+Feel free to send us an email if you need clarification.
 
 You need to submit the file to [CASS](https://cssystem.cse.ust.hk/UGuides/cass/index.html). 
 The deadline for this assignment is **September 30, 2022, 23:59:59** (inclusive).
 
-**We will grade your PA based on the latest commit before the deadline.**
-Please make sure all the amendments are made before the deadline and do not touch it once your are satisfyed.
+**We will grade your submission based on the latest committed version before the deadline.**
+Please make sure all the amendments are made before the deadline and do not make changes after the deadline.
 
 ## Q&A
 
-Should you have any questions or doubts, please go to [Discussion](https://docs.github.com/en/discussions/quickstart#creating-a-new-discussion) of this repository to ask and view other students' questions and answers.
-TAs are available to assist there.
+Should you have any questions, please go to [Discussion](https://docs.github.com/en/discussions/quickstart#creating-a-new-discussion) of this repository to ask and view other students' questions and answers.
+TAs will assist you there.
 
-## Game Specifications
+## Game Specification
 
-On top of the original Sokoban game, we add features to support multiple players playing simultaneously on the same game map.
-The specifications and requirements of each class and method are available in the JavaDoc in the skeleton code, right besides where you need to write code.
+On top of the original Sokoban game, we add features to support multiple players playing simultaneously on the same game map. You need to implement according to the provided skeleton code.
+The specification and requirements of each class and method are available in the JavaDoc in the skeleton code.
 Here we list some key points.
 
 ### Text-based Representation
@@ -87,15 +86,15 @@ Here we list some key points.
 
 ### Players
 
-- Each player exclusively takes one position and other players and boxes cannot be moved to that place.
-- Players can only move one box at once.
+- Each player exclusively takes one position, and other players and boxes cannot be moved to the position being occupied by a player.
+- Players can only move one box at a time.
 - Players have their own boxes and can only move boxes belonging to them. For example, player `A` can only move `a` boxes. `b` boxes are like walls to player `A`.
 - The idea of the game is to support multiple players (more than 2). The core package `hk.ust.comp3021.game` should support arbitrary number of players.
 - Each player is associated with an ID, which is the offset from letter `A` to its own letter representation. For example, Player `C` has ID `(int)('C' - 'A') = 2`.
 
 ### Actions
 
-- In PA1, terminal based game only support at most 2 players. Such checking should be down in `hk.ust.comp3021.tui`. 
+- In PA1, the terminal based game supports up to 2 players. Such checking should be done in `hk.ust.comp3021.tui`. 
 - Key `A,S,W,D` and `H,J,K,L` are used to move Player with ID 0 and 1 to `Left,Down,Up,Right` direction by 1 step, respectively
 - Key `U` are used to undo the last box movement. Undo is not specific to players and will revert the last box movement regardless of which player moves the last box. 
 
@@ -112,14 +111,14 @@ Here we list some key points.
 
 ### Deadlock Condition
 
-- None of the boxes in the map is movable.
+- None of the boxes in the map is movable while the winning condition has not been satisfied.
 
 ### Map Validation
 
-- The map must be closed with walls.
-- All players, boxes and destinations must be inside walls.
-- Each player must have boxes to move.
-- For each box, there must be a corresponding player who can move this box.
+- The map must be surrounded by walls.
+- All players, boxes and destinations must be inside the map.
+- Each player must have a box to move.
+- Each box is reachable by its player and movable.
 - The number of boxes must be equal to the number of destinations.
 - There must not be more than one upper-case letter for each player.
 
