@@ -15,8 +15,8 @@ class MoveTest {
     @Test
     void moveLeft() {
         assertEquals(
-                Position.of(232, 233),
-                new Move.Left(-1).nextPosition(pos)
+            Position.of(232, 233),
+            new Move.Left(-1).nextPosition(pos)
         );
     }
 }

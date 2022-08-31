@@ -1,19 +1,14 @@
 package hk.ust.comp3021.tui;
 
 import hk.ust.comp3021.actions.Exit;
-import hk.ust.comp3021.actions.InvalidInput;
-import hk.ust.comp3021.actions.Undo;
 import hk.ust.comp3021.utils.TestKind;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TerminalInputEngineTest {

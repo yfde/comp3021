@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.Mockito.*;
 
 class TerminalSokobanGameTest {
@@ -25,8 +24,8 @@ class TerminalSokobanGameTest {
         final var renderingEngine = mock(TerminalRenderingEngine.class);
         when(gameState.isWin()).thenReturn(false);
         when(inputEngine.fetchAction())
-                .thenReturn(new InvalidInput(0, ""))
-                .thenReturn(new Exit(0));
+            .thenReturn(new InvalidInput(0, ""))
+            .thenReturn(new Exit(0));
 
         final var game = new TerminalSokobanGame(gameState, inputEngine, renderingEngine);
         game.run();

@@ -1,15 +1,14 @@
 package hk.ust.comp3021.game;
 
-import hk.ust.comp3021.actions.*;
+import hk.ust.comp3021.actions.Action;
+import hk.ust.comp3021.actions.ActionResult;
+import hk.ust.comp3021.actions.Move;
 import hk.ust.comp3021.utils.TestHelper;
 import hk.ust.comp3021.utils.TestKind;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 class AbstractSokobanGameTest {
@@ -18,13 +17,13 @@ class AbstractSokobanGameTest {
     @Test
     void testMove() {
         String mapText = """
-                233
-                ######
-                #A..@#
-                #....#
-                #a...#
-                ######
-                """;
+            233
+            ######
+            #A..@#
+            #....#
+            #a...#
+            ######
+            """;
         final var testMap = TestHelper.parseGameMap(mapText);
         final var gameState = spy(new GameState(testMap));
 
@@ -39,13 +38,13 @@ class AbstractSokobanGameTest {
     @Test
     void testHitWall() {
         String mapText = """
-                233
-                ######
-                #A..@#
-                ##...#
-                #a...#
-                ######
-                """;
+            233
+            ######
+            #A..@#
+            ##...#
+            #a...#
+            ######
+            """;
         final var testMap = TestHelper.parseGameMap(mapText);
         final var gameState = spy(new GameState(testMap));
 
@@ -60,13 +59,13 @@ class AbstractSokobanGameTest {
     @Test
     void testPushBox() {
         String mapText = """
-                233
-                ######
-                #A..@#
-                #a...#
-                #....#
-                ######
-                """;
+            233
+            ######
+            #A..@#
+            #a...#
+            #....#
+            ######
+            """;
         final var testMap = TestHelper.parseGameMap(mapText);
         final var gameState = spy(new GameState(testMap));
 

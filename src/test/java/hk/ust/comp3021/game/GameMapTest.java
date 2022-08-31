@@ -9,24 +9,20 @@ import hk.ust.comp3021.utils.TestKind;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameMapTest {
 
     private static final String rectangularMap = """
-            233
-            ######
-            #A..@#
-            #...@#
-            #....#
-            #.a..#
-            #..a.#
-            ######
-            """;
+        233
+        ######
+        #A..@#
+        #...@#
+        #....#
+        #.a..#
+        #..a.#
+        ######
+        """;
 
     @Tag(TestKind.PUBLIC)
     @Test
