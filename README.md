@@ -122,6 +122,16 @@ Here we list some key points.
 - The number of boxes must be equal to the number of destinations.
 - There must not be more than one upper-case letter for each player.
 
+
+## Reference Implementation
+
+We provide a reference implementation of this assignment (it is obfuscated and you won't see solutions in it) [here](https://course.cse.ust.hk/comp3021/assignments/Sokoban-proguard.jar). 
+You can run it with the following command: 
+```bash
+java --enable-preview -jar Sokoban-proguard.jar path/to/game/map/file.
+```
+We provide two sample game map in the `src/main/resources` folder. 
+
 ## Academic Integrity
 
 We trust that you are familiar with HKUST's Honor Code. If not, refer to
