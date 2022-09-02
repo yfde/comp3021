@@ -118,7 +118,6 @@ Here we list some key points.
 - The map must be surrounded by walls.
 - All players, boxes and destinations must be inside the map.
 - Each player must have a box to move.
-- Each box is reachable by its player and movable.
 - The number of boxes must be equal to the number of destinations.
 - There must not be more than one upper-case letter for each player.
 
