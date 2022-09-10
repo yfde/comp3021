@@ -102,7 +102,7 @@ Here we list some key points.
 
 - There is a limit on Undo actions, which is specified when game starts.
 - A checkpoint should be marked after every time a box is moved.
-- Undo actions reverts the game state to the last checkpoint.
+- Undo actions revert the game state to the previous checkpoint. For example, suppose by now `cp1` and `cp2` have been recorded, `undo` action should reverts the game state to `cp1`. The principle is to revert the last movement of the box.
 - Undo is global no matter which player moves a box.
 
 ### Winning Condition
