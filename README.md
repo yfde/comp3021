@@ -111,7 +111,8 @@ Here we list some key points.
 
 ### Deadlock Condition
 
-- None of the boxes in the map is movable while the winning condition has not been satisfied.
+- Deadlock checking is not required. It is more about algorithm design and out of scope of this course. 
+- Game should exit either when the game is won or the player performs `Exit` action. 
 
 ### Map Validation
 
