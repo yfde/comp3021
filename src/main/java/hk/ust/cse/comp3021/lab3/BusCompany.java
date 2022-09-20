@@ -19,6 +19,11 @@ record Bus(int id, String model) {
  */
 public class BusCompany {
     // TODO add any static or instance field as you need.
+    private static int numCompanies = 0;
+    { numCompanies += 1; }
+    private String name;
+    private ArrayList<Bus> bus = new ArrayList<>();
+
 
     /**
      * Initialize a new BusCompany instance.
@@ -27,6 +32,7 @@ public class BusCompany {
      */
     public BusCompany(@NotNull String name) {
         // TODO implement this constructor
+        this.name = name;
     }
 
     /**
@@ -35,7 +41,8 @@ public class BusCompany {
     @NotNull
     public String getName() {
         // TODO implement this method
-        throw new RuntimeException("implement me");
+        return this.name;
+        // throw new RuntimeException("implement me");
     }
 
     /**
@@ -43,7 +50,8 @@ public class BusCompany {
      */
     public int getNumBuses() {
         // TODO implement this method
-        throw new RuntimeException("implement me");
+        return this.bus.size();
+        // throw new RuntimeException("implement me");
     }
 
     /**
@@ -53,7 +61,13 @@ public class BusCompany {
     @Nullable
     public Bus getBusByID(int id) {
         // TODO implement this method
-        throw new RuntimeException("implement me");
+        for(Bus i:this.bus){
+            if(i.id() == id){
+                return i;
+            }
+        }
+        return null;
+        // throw new RuntimeException("implement me");
     }
 
     /**
@@ -63,7 +77,21 @@ public class BusCompany {
     @NotNull
     public String[] getModels() {
         // TODO implement this method
-        throw new RuntimeException("implement me");
+        ArrayList<String> uniqueList = new ArrayList<>();
+        for(Bus i:this.bus){
+            boolean modelExist = false;
+            for(String j:uniqueList){
+                if(i.model().equals(j)){
+                    modelExist = true;
+                }
+            }
+            if(!modelExist){
+                uniqueList.add(i.model());
+            }
+        }
+        String[] result = new String[uniqueList.size()];
+        return uniqueList.toArray(result);
+        // throw new RuntimeException("implement me");
     }
 
     /**
@@ -78,7 +106,18 @@ public class BusCompany {
      */
     public boolean createAndAddBus(int id, String model) {
         // TODO implement this method
-        throw new RuntimeException("implement me");
+        boolean idExist = false;
+        for(Bus i:this.bus){
+            if(i.id() == id){
+                idExist = true;
+            }
+        }
+        if(idExist){
+            return false;
+        }
+        this.bus.add(new Bus(id, model));
+        return true;
+        // throw new RuntimeException("implement me");
     }
 
     /**
@@ -86,7 +125,10 @@ public class BusCompany {
      */
     public void removeAllBuses() {
         // TODO implement this method
-        throw new RuntimeException("implement me");
+        while(!this.bus.isEmpty()){
+            this.bus.remove(0);
+        }
+        // throw new RuntimeException("implement me");
     }
 
     /**
@@ -94,7 +136,8 @@ public class BusCompany {
      */
     public static int getNumCompanies() {
         // TODO implement this method
-        throw new RuntimeException("implement me");
+        return numCompanies;
+        // throw new RuntimeException("implement me");
     }
 
 }
