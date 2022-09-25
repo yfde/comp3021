@@ -1,6 +1,6 @@
 package hk.ust.comp3021.tui;
 
-import hk.ust.comp3021.actions.Action;
+import hk.ust.comp3021.actions.*;
 import hk.ust.comp3021.game.InputEngine;
 import hk.ust.comp3021.utils.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +37,18 @@ public class TerminalInputEngine implements InputEngine {
         final var inputLine = terminalScanner.nextLine();
 
         // TODO
-        throw new NotImplementedException();
+        Action result;
+        switch (inputLine) {
+            case "w" -> result = new Move.Up(1);
+            case "s" -> result = new Move.Down(1);
+            case "a" -> result = new Move.Left(1);
+            case "d" -> result = new Move.Right(1);
+            case "u" -> result = new Undo(1);
+            case "exit" -> result = new Exit(1);
+            default -> result = new InvalidInput(1, "Invalid Input.");
+        }
+
+        return result;
+        // throw new NotImplementedException();
     }
 }
