@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -21,6 +23,13 @@ import java.util.Set;
  */
 public class GameMap {
 
+    private int maxWidth;
+    private int maxHeight;
+    private int undoLimit;
+    private Set<Position> destinations;
+    private Set<Integer> playerIds;
+    private HashMap<Position, Entity> allEntity;
+
     /**
      * Create a new GameMap with width, height, set of box destinations and undo limit.
      *
@@ -32,9 +41,15 @@ public class GameMap {
      *                     0 means undo is not allowed.
      *                     -1 means unlimited. Other negative numbers are not allowed.
      */
-    public GameMap(int maxWidth, int maxHeight, Set<Position> destinations, int undoLimit) {
+    public GameMap(int maxWidth, int maxHeight, Set<Position> destinations, int undoLimit, Set<Integer> playerIds, HashMap<Position, Entity> allEntity) {
         // TODO
-        throw new NotImplementedException();
+        this.maxWidth = maxWidth;
+        this.maxHeight = maxHeight;
+        this.destinations = destinations;
+        this.undoLimit = undoLimit;
+        this.playerIds = playerIds;
+        this.allEntity = allEntity;
+        // throw new NotImplementedException();
     }
 
     /**
@@ -74,7 +89,50 @@ public class GameMap {
      */
     public static GameMap parse(String mapText) {
         // TODO
-        throw new NotImplementedException();
+        var lines = mapText.split("\n");
+        var undoLimit = Integer.parseInt(lines[0]);
+        if (undoLimit < -1) {
+            throw new IllegalArgumentException();
+        }
+
+        int maxWidth = 0;
+        int maxHeight = 0;
+        Set<Position> destinations = new HashSet<>();
+        Set<Integer> playerIds = new HashSet<>();
+        HashMap<Position, Entity> allEntity = new HashMap<>();
+        for (int i = 1; i < lines.length; i++) {
+            maxHeight++;
+            if (lines[i].length() > maxWidth) {
+                maxWidth = lines[i].length();
+            }
+        }
+        for (int i = 0; i < maxHeight; i++) {
+            var line = lines[i+1];
+            for (int j = 0; j < maxWidth; j++) {
+                if (j < line.length()) {
+                    var c = line.charAt(j);
+                    if ((int)(c - 'A') >= 0 && (int)(c - 'A') <= 25) {
+                        playerIds.add((int)(c - 'A'));
+                        allEntity.put(new Position(j, i), new Player((int)(c - 'A')));
+                    }else if ((int)(c - 'a') >= 0 && (int)(c - 'a') <= 25) {
+                        allEntity.put(new Position(j, i), new Box((int)(c - 'a')));
+                    }else {
+                        switch (c) {
+                            case '.' -> allEntity.put(new Position(j, i), new Empty());
+                            case '@' -> {
+                                destinations.add(new Position(j, i));
+                                allEntity.put(new Position(j, i), new Empty());
+                            }
+                            case '#' -> allEntity.put(new Position(j, i), new Wall());
+                        }
+                    }
+                }else {
+                    allEntity.put(new Position(j, i), null);
+                }
+            }
+        }
+        return new GameMap(maxWidth, maxHeight, destinations, undoLimit, playerIds, allEntity);
+        // throw new NotImplementedException();
     }
 
     /**
@@ -86,7 +144,8 @@ public class GameMap {
     @Nullable
     public Entity getEntity(Position position) {
         // TODO
-        throw new NotImplementedException();
+        return this.allEntity.get(position);
+        // throw new NotImplementedException();
     }
 
     /**
@@ -97,7 +156,8 @@ public class GameMap {
      */
     public void putEntity(Position position, Entity entity) {
         // TODO
-        throw new NotImplementedException();
+        this.allEntity.replace(position, entity);
+        // throw new NotImplementedException();
     }
 
     /**
@@ -107,7 +167,8 @@ public class GameMap {
      */
     public @NotNull @Unmodifiable Set<Position> getDestinations() {
         // TODO
-        throw new NotImplementedException();
+        return this.destinations;
+        // throw new NotImplementedException();
     }
 
     /**
@@ -117,7 +178,8 @@ public class GameMap {
      */
     public Optional<Integer> getUndoLimit() {
         // TODO
-        throw new NotImplementedException();
+        return Optional.of(this.undoLimit);
+        // throw new NotImplementedException();
     }
 
     /**
@@ -127,7 +189,8 @@ public class GameMap {
      */
     public Set<Integer> getPlayerIds() {
         // TODO
-        throw new NotImplementedException();
+        return this.playerIds;
+        // throw new NotImplementedException();
     }
 
     /**
@@ -137,7 +200,8 @@ public class GameMap {
      */
     public int getMaxWidth() {
         // TODO
-        throw new NotImplementedException();
+        return this.maxWidth;
+        // throw new NotImplementedException();
     }
 
     /**
@@ -147,6 +211,7 @@ public class GameMap {
      */
     public int getMaxHeight() {
         // TODO
-        throw new NotImplementedException();
+        return maxHeight;
+        // throw new NotImplementedException();
     }
 }
