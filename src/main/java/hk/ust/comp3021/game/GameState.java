@@ -1,13 +1,12 @@
 package hk.ust.comp3021.game;
 
-import hk.ust.comp3021.entities.Entity;
+import hk.ust.comp3021.entities.*;
 import hk.ust.comp3021.utils.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The state of the Sokoban Game.
@@ -23,6 +22,15 @@ import java.util.Set;
  */
 public class GameState {
 
+    private int maxWidth;
+    private int maxHeight;
+    private GameMap map;
+    private Optional<Integer> undoLimit;
+    private Set<Position> destinations = new HashSet<>();
+    private Set<Integer> playerIds = new HashSet<>();
+    private HashMap<Position, Entity> allEntity = new HashMap<>();
+    private ArrayList<HashMap<Position, Entity>> checkpoints = new ArrayList<>();
+
     /**
      * Create a running game state from a game map.
      *
@@ -30,7 +38,20 @@ public class GameState {
      */
     public GameState(@NotNull GameMap map) {
         // TODO
-        throw new NotImplementedException();
+        this.maxWidth = map.getMaxWidth();
+        this.maxHeight = map.getMaxHeight();
+        this.undoLimit = map.getUndoLimit();
+        this.map = map;
+        this.destinations = map.getDestinations();
+        this.playerIds = map.getPlayerIds();
+        for (int i = 0; i < this.maxHeight; i++) {
+            for (int j = 0; j < this.maxWidth; j++) {
+                Entity e = map.getEntity(new Position(j, i));
+                this.allEntity.put(new Position(j, i), e);
+            }
+        }
+        checkpoint();
+        // throw new NotImplementedException();
     }
 
     /**
@@ -41,7 +62,18 @@ public class GameState {
      */
     public @Nullable Position getPlayerPositionById(int id) {
         // TODO
-        throw new NotImplementedException();
+        for (int i = 0; i < this.maxHeight; i++) {
+            for (int j = 0; j < this.maxWidth; j++) {
+                Entity e = this.allEntity.get(new Position(j, i));
+                if (e instanceof Player) {
+                    if (((Player) e).getId() == id) {
+                        return new Position(j, i);
+                    }
+                }
+            }
+        }
+        return null;
+        // throw new NotImplementedException();
     }
 
     /**
@@ -51,7 +83,17 @@ public class GameState {
      */
     public @NotNull Set<Position> getAllPlayerPositions() {
         // TODO
-        throw new NotImplementedException();
+        Set<Position> result = new HashSet<>();
+        for (int i = 0; i < this.maxHeight; i++) {
+            for (int j = 0; j < this.maxWidth; j++) {
+                Entity e = this.allEntity.get(new Position(j, i));
+                if (e instanceof Player) {
+                    result.add(new Position(j, i));
+                }
+            }
+        }
+        return result;
+        // throw new NotImplementedException();
     }
 
     /**
@@ -62,7 +104,8 @@ public class GameState {
      */
     public @Nullable Entity getEntity(@NotNull Position position) {
         // TODO
-        throw new NotImplementedException();
+        return this.allEntity.get(position);
+        // throw new NotImplementedException();
     }
 
     /**
@@ -73,7 +116,8 @@ public class GameState {
      */
     public @NotNull @Unmodifiable Set<Position> getDestinations() {
         // TODO
-        throw new NotImplementedException();
+        return this.destinations;
+        // throw new NotImplementedException();
     }
 
     /**
@@ -85,7 +129,8 @@ public class GameState {
      */
     public Optional<Integer> getUndoQuota() {
         // TODO
-        throw new NotImplementedException();
+        return this.undoLimit;
+        // throw new NotImplementedException();
     }
 
     /**
@@ -95,8 +140,14 @@ public class GameState {
      * @return true is the game wins.
      */
     public boolean isWin() {
-// TODO
-        throw new NotImplementedException();
+        // TODO
+        for (Position p: this.destinations) {
+            if (!(this.allEntity.get(p) instanceof Box)) {
+                return false;
+            }
+        }
+        return true;
+        // throw new NotImplementedException();
     }
 
     /**
@@ -109,7 +160,9 @@ public class GameState {
      */
     public void move(Position from, Position to) {
         // TODO
-        throw new NotImplementedException();
+        this.allEntity.put(to, this.allEntity.get(from));
+        this.allEntity.put(from, new Empty());
+        // throw new NotImplementedException();
     }
 
     /**
@@ -122,7 +175,15 @@ public class GameState {
      */
     public void checkpoint() {
         // TODO
-        throw new NotImplementedException();
+        HashMap<Position, Entity> temp = new HashMap<>();
+        for (int i = 0; i < this.maxHeight; i++) {
+            for (int j = 0; j < this.maxWidth; j++) {
+                Entity e = this.allEntity.get(new Position(j, i));
+                temp.put(new Position(j, i), e);
+            }
+        }
+        this.checkpoints.add(temp);
+        // throw new NotImplementedException();
     }
 
     /**
@@ -134,7 +195,17 @@ public class GameState {
      */
     public void undo() {
         // TODO
-        throw new NotImplementedException();
+        int size = this.checkpoints.size();
+        if (size > 1) {
+            this.allEntity = this.checkpoints.get(size - 2);
+            this.checkpoints.remove(size - 1);
+            if (this.undoLimit.isPresent()) {
+                this.undoLimit = Optional.of(this.undoLimit.get() - 1);
+            }
+        } else {
+            this.allEntity = this.checkpoints.get(0);
+        }
+        // throw new NotImplementedException();
     }
 
     /**
@@ -145,7 +216,8 @@ public class GameState {
      */
     public int getMapMaxWidth() {
         // TODO
-        throw new NotImplementedException();
+        return this.maxWidth;
+        // throw new NotImplementedException();
     }
 
     /**
@@ -156,6 +228,7 @@ public class GameState {
      */
     public int getMapMaxHeight() {
         // TODO
-        throw new NotImplementedException();
+        return this.maxHeight;
+        // throw new NotImplementedException();
     }
 }

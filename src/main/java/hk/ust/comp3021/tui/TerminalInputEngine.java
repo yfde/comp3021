@@ -37,16 +37,15 @@ public class TerminalInputEngine implements InputEngine {
         final var inputLine = terminalScanner.nextLine();
 
         // TODO
-        Action result;
-        switch (inputLine) {
-            case "w" -> result = new Move.Up(1);
-            case "s" -> result = new Move.Down(1);
-            case "a" -> result = new Move.Left(1);
-            case "d" -> result = new Move.Right(1);
-            case "u" -> result = new Undo(1);
-            case "exit" -> result = new Exit(1);
-            default -> result = new InvalidInput(1, "Invalid Input.");
-        }
+        Action result = switch (inputLine) {
+            case "w" -> new Move.Up(1);
+            case "s" -> new Move.Down(1);
+            case "a" -> new Move.Left(1);
+            case "d" -> new Move.Right(1);
+            case "u" -> new Undo(1);
+            case "exit" -> new Exit(1);
+            default -> new InvalidInput(1, "Invalid Input.");
+        };
 
         return result;
         // throw new NotImplementedException();

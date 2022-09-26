@@ -41,14 +41,12 @@ public class GameMap {
      *                     0 means undo is not allowed.
      *                     -1 means unlimited. Other negative numbers are not allowed.
      */
-    public GameMap(int maxWidth, int maxHeight, Set<Position> destinations, int undoLimit, Set<Integer> playerIds, HashMap<Position, Entity> allEntity) {
+    public GameMap(int maxWidth, int maxHeight, Set<Position> destinations, int undoLimit) {
         // TODO
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
         this.destinations = destinations;
         this.undoLimit = undoLimit;
-        this.playerIds = playerIds;
-        this.allEntity = allEntity;
         // throw new NotImplementedException();
     }
 
@@ -99,6 +97,7 @@ public class GameMap {
         int maxHeight = 0;
         Set<Position> destinations = new HashSet<>();
         Set<Integer> playerIds = new HashSet<>();
+        Set<Box> boxes = new HashSet<>();
         HashMap<Position, Entity> allEntity = new HashMap<>();
         for (int i = 1; i < lines.length; i++) {
             maxHeight++;
@@ -112,9 +111,13 @@ public class GameMap {
                 if (j < line.length()) {
                     var c = line.charAt(j);
                     if ((int)(c - 'A') >= 0 && (int)(c - 'A') <= 25) {
+                        if (playerIds.contains((int)(c - 'A'))) {
+                            throw new IllegalArgumentException();
+                        }
                         playerIds.add((int)(c - 'A'));
                         allEntity.put(new Position(j, i), new Player((int)(c - 'A')));
                     }else if ((int)(c - 'a') >= 0 && (int)(c - 'a') <= 25) {
+                        boxes.add(new Box((int)(c - 'a')));
                         allEntity.put(new Position(j, i), new Box((int)(c - 'a')));
                     }else {
                         switch (c) {
@@ -124,6 +127,7 @@ public class GameMap {
                                 allEntity.put(new Position(j, i), new Empty());
                             }
                             case '#' -> allEntity.put(new Position(j, i), new Wall());
+                            default -> allEntity.put(new Position(j, i), null);
                         }
                     }
                 }else {
@@ -131,7 +135,28 @@ public class GameMap {
                 }
             }
         }
-        return new GameMap(maxWidth, maxHeight, destinations, undoLimit, playerIds, allEntity);
+        Set<Integer> uniqueId = new HashSet<>();
+        for (Box b: boxes) {
+            if (!playerIds.contains(b.getPlayerId())) {
+                throw new IllegalArgumentException();
+            }
+            if (!uniqueId.contains(b.getPlayerId())) {
+                uniqueId.add(b.getPlayerId());
+            }
+        }
+        if (uniqueId.size() != playerIds.size()) {
+            throw new IllegalArgumentException();
+        }
+        if (playerIds.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        if (boxes.size() != destinations.size()) {
+            throw new IllegalArgumentException();
+        }
+        var result = new GameMap(maxWidth, maxHeight, destinations, undoLimit);
+        result.playerIds = playerIds;
+        result.allEntity = allEntity;
+        return result;
         // throw new NotImplementedException();
     }
 
@@ -156,7 +181,7 @@ public class GameMap {
      */
     public void putEntity(Position position, Entity entity) {
         // TODO
-        this.allEntity.replace(position, entity);
+        this.allEntity.put(position, entity);
         // throw new NotImplementedException();
     }
 
@@ -178,7 +203,11 @@ public class GameMap {
      */
     public Optional<Integer> getUndoLimit() {
         // TODO
-        return Optional.of(this.undoLimit);
+        if (this.undoLimit == -1) {
+            return Optional.empty();
+        }else {
+            return Optional.of(this.undoLimit);
+        }
         // throw new NotImplementedException();
     }
 
