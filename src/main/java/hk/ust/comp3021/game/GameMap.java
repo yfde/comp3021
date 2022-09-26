@@ -87,7 +87,7 @@ public class GameMap {
      */
     public static GameMap parse(String mapText) {
         // TODO
-        var lines = mapText.split("\n");
+        var lines = mapText.split(System.lineSeparator());
         var undoLimit = Integer.parseInt(lines[0]);
         if (undoLimit < -1) {
             throw new IllegalArgumentException();

@@ -24,7 +24,6 @@ public class GameState {
 
     private int maxWidth;
     private int maxHeight;
-    private GameMap map;
     private Optional<Integer> undoLimit;
     private Set<Position> destinations = new HashSet<>();
     private Set<Integer> playerIds = new HashSet<>();
@@ -41,7 +40,6 @@ public class GameState {
         this.maxWidth = map.getMaxWidth();
         this.maxHeight = map.getMaxHeight();
         this.undoLimit = map.getUndoLimit();
-        this.map = map;
         this.destinations = map.getDestinations();
         this.playerIds = map.getPlayerIds();
         for (int i = 0; i < this.maxHeight; i++) {

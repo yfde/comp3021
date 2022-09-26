@@ -38,13 +38,17 @@ public class TerminalInputEngine implements InputEngine {
 
         // TODO
         Action result = switch (inputLine) {
-            case "w" -> new Move.Up(1);
-            case "s" -> new Move.Down(1);
-            case "a" -> new Move.Left(1);
-            case "d" -> new Move.Right(1);
-            case "u" -> new Undo(1);
-            case "exit" -> new Exit(1);
-            default -> new InvalidInput(1, "Invalid Input.");
+            case "w" -> new Move.Up(0);
+            case "s" -> new Move.Down(0);
+            case "a" -> new Move.Left(0);
+            case "d" -> new Move.Right(0);
+            case "k" -> new Move.Up(1);
+            case "j" -> new Move.Down(1);
+            case "h" -> new Move.Left(1);
+            case "l" -> new Move.Right(1);
+            case "u" -> new Undo(0);
+            case "exit" -> new Exit(0);
+            default -> new InvalidInput(0, "Invalid Input.");
         };
 
         return result;

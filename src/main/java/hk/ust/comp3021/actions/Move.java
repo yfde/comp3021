@@ -37,7 +37,7 @@ public abstract sealed class Move extends Action permits Move.Down, Move.Left, M
             // TODO
             var x = currentPosition.x();
             var y = currentPosition.y();
-            return new Position(x, y-1);
+            return new Position(x, y+1);
             // throw new NotImplementedException();
         }
     }
@@ -100,7 +100,7 @@ public abstract sealed class Move extends Action permits Move.Down, Move.Left, M
             // TODO
             var x = currentPosition.x();
             var y = currentPosition.y();
-            return new Position(x, y+1);
+            return new Position(x, y-1);
             // throw new NotImplementedException();
         }
     }
