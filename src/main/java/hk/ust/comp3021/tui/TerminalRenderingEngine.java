@@ -32,10 +32,6 @@ public class TerminalRenderingEngine implements RenderingEngine {
         for (int y = 0; y < state.getMapMaxHeight(); y++) {
             for (int x = 0; x < state.getMapMaxWidth(); x++) {
                 final var entity = state.getEntity(Position.of(x, y));
-                if (entity == null) {
-                    builder.append(' ');
-                    continue;
-                }
                 final var charToPrint = switch (entity) {
                     // TODO
                     case Wall ignored -> '#';
@@ -49,6 +45,7 @@ public class TerminalRenderingEngine implements RenderingEngine {
                         }
                         yield '.';
                     }
+                    case null -> ' ';
                     default -> ' ';
                 };
                 builder.append(charToPrint);

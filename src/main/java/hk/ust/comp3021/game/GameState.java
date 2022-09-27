@@ -202,6 +202,8 @@ public class GameState {
             }
         } else {
             this.allEntity = this.checkpoints.get(0);
+            this.checkpoints.remove(0);
+            checkpoint();
         }
         // throw new NotImplementedException();
     }
