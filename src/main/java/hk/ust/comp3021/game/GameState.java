@@ -197,6 +197,8 @@ public class GameState {
         if (size > 1) {
             this.allEntity = this.checkpoints.get(size - 2);
             this.checkpoints.remove(size - 1);
+            this.checkpoints.remove(size - 2);
+            checkpoint();
             if (this.undoLimit.isPresent()) {
                 this.undoLimit = Optional.of(this.undoLimit.get() - 1);
             }
