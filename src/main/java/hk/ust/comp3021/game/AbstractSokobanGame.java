@@ -2,7 +2,6 @@ package hk.ust.comp3021.game;
 
 import hk.ust.comp3021.actions.*;
 import hk.ust.comp3021.entities.*;
-import hk.ust.comp3021.utils.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 /**
