@@ -87,9 +87,14 @@ public class GameMap {
     public static GameMap parse(String mapText) {
         // TODO
         var lines = mapText.split("\r?\n|\r");
-        var undoLimit = Integer.parseInt(lines[0]);
+        var undoLimit = -999;
+        try {
+            undoLimit = Integer.parseInt(lines[0]);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to parse undo limit.");
+        }
         if (undoLimit < -1) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("invalid undo limit");
         }
 
         int maxWidth = 0;
@@ -111,7 +116,7 @@ public class GameMap {
                     var c = line.charAt(j);
                     if ((int)(c - 'A') >= 0 && (int)(c - 'A') <= 25) {
                         if (playerIds.contains((int)(c - 'A'))) {
-                            throw new IllegalArgumentException();
+                            throw new IllegalArgumentException("duplicate players detected in the map");
                         }
                         playerIds.add((int)(c - 'A'));
                         allEntity.put(new Position(j, i), new Player((int)(c - 'A')));
@@ -134,23 +139,23 @@ public class GameMap {
                 }
             }
         }
+        if (playerIds.isEmpty()) {
+            throw new IllegalArgumentException("no player");
+        }
+        if (boxes.size() != destinations.size()) {
+            throw new IllegalArgumentException("mismatch destinations");
+        }
         Set<Integer> uniqueId = new HashSet<>();
         for (Box b: boxes) {
             if (!playerIds.contains(b.getPlayerId())) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("unmatched players");
             }
             if (!uniqueId.contains(b.getPlayerId())) {
                 uniqueId.add(b.getPlayerId());
             }
         }
         if (uniqueId.size() != playerIds.size()) {
-            throw new IllegalArgumentException();
-        }
-        if (playerIds.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-        if (boxes.size() != destinations.size()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("unmatched players");
         }
         var result = new GameMap(maxWidth, maxHeight, destinations, undoLimit);
         result.playerIds = playerIds;

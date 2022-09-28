@@ -33,7 +33,7 @@ public class TerminalSokobanGame extends AbstractSokobanGame {
         // TODO
         // Check the number of players
         if (super.state.getAllPlayerPositions().size() > 2) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("TerminalSokobanGame only support at most two players.");
         }
         this.renderingEngine.message("Sokoban game is ready");
         // throw new NotImplementedException();
