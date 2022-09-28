@@ -16,7 +16,7 @@ public class StringUtils {
      */
     static char getCharAt(@NotNull final String input, final int idx) {
         // TODO
-        return '\u0000';
+        return input.charAt(idx);
     }
 
     /**
@@ -28,7 +28,7 @@ public class StringUtils {
      */
     static boolean lengthLessThanEqual(@NotNull final String input, final int len) {
         // TODO
-        return false;
+        return input.length() <= len;
     }
 
     /**
@@ -57,7 +57,16 @@ public class StringUtils {
     @NotNull
     static List<String> splitByCharacter(@NotNull final String input, final char delimiter) {
         // TODO
-        return null;
+        String splitter = switch (delimiter) {
+            case '.' -> "\\.";
+            default -> String.valueOf(delimiter);
+        };
+        var temp = input.split(splitter, -1);
+        List<String> result = new ArrayList<>();
+        for (String s: temp) {
+            result.add(s);
+        }
+        return result;
     }
 
     /**
@@ -72,7 +81,7 @@ public class StringUtils {
      */
     static boolean containsWhitespace(@NotNull final String input) {
         // TODO
-        return false;
+        return input.contains(" ");
     }
 
     /**
@@ -87,7 +96,7 @@ public class StringUtils {
      */
     static boolean startWithAlphabet(@NotNull final String input) {
         // TODO
-        return false;
+        return Character.isAlphabetic(input.charAt(0));
     }
 
     /**
@@ -119,6 +128,29 @@ public class StringUtils {
             final boolean digitsValid,
             @NotNull final String validChars) {
         // TODO
-        return false;
+        for (int i = 0; i < input.length(); i++) {
+            var c = input.charAt(i);
+            boolean result = false;
+            if (alphabetsValid) {
+                if (Character.isAlphabetic(c)) {
+                    result = true;
+                }
+            }
+            if (digitsValid) {
+                if (Character.isDigit(c)) {
+                    result = true;
+                }
+            }
+            for (int j = 0; j < validChars.length(); j++) {
+                var tc = validChars.charAt(j);
+                if (tc == c) {
+                    result = true;
+                }
+            }
+            if (!result) {
+                return false;
+            }
+        }
+        return true;
     }
 }
