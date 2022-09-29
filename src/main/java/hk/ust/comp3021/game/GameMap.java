@@ -26,8 +26,8 @@ public class GameMap {
     private int maxHeight;
     private int undoLimit;
     private Set<Position> destinations;
-    private Set<Integer> playerIds;
-    private HashMap<Position, Entity> allEntity;
+    private Set<Integer> playerIds = new HashSet<>();
+    private HashMap<Position, Entity> allEntity = new HashMap<>();
 
     /**
      * Create a new GameMap with width, height, set of box destinations and undo limit.
