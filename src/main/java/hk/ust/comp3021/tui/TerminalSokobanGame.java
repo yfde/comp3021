@@ -42,8 +42,7 @@ public class TerminalSokobanGame extends AbstractSokobanGame {
     @Override
     public void run() {
         // TODO
-        boolean exit = false;
-        while (!super.shouldStop() && !exit) {
+        while (!super.shouldStop()) {
             this.renderingEngine.render(super.state);
             if (super.state.getUndoQuota().isPresent()) {
                 this.renderingEngine.message("Undo Quota: " + String.valueOf(this.state.getUndoQuota().get()));
@@ -52,18 +51,13 @@ public class TerminalSokobanGame extends AbstractSokobanGame {
             }
 
             var act = super.processAction(this.inputEngine.fetchAction());
-            switch (act) {
-                case ActionResult.Success a -> {
-                    if (a.getAction() instanceof Exit) {
-                        exit = true;
-                    }
-                }
-                case ActionResult.Failed a -> this.renderingEngine.message(a.getReason());
+            if (act instanceof ActionResult.Failed a) {
+                this.renderingEngine.message(a.getReason());
             }
         }
         this.renderingEngine.render(super.state);
         this.renderingEngine.message("Game exits.");
-        if (!exit) {
+        if (this.state.isWin()) {
             this.renderingEngine.message("You win.");
         }
         // throw new NotImplementedException();

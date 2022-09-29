@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class AbstractSokobanGame implements SokobanGame {
     @NotNull
     protected final GameState state;
+    private boolean exit = false;
 
     protected AbstractSokobanGame(@NotNull GameState gameState) {
         this.state = gameState;
@@ -21,7 +22,7 @@ public abstract class AbstractSokobanGame implements SokobanGame {
      */
     protected boolean shouldStop() {
         // TODO
-        if (this.state.isWin()) {
+        if (this.state.isWin() || exit) {
             return true;
         }
         return false;
@@ -91,7 +92,10 @@ public abstract class AbstractSokobanGame implements SokobanGame {
                 }
             }
             case InvalidInput act -> new ActionResult.Failed(act, "Invalid Input");
-            default -> new ActionResult.Success(action);
+            case Exit act -> {
+                this.exit = true;
+                yield new ActionResult.Success(act);
+            }
         };
         // throw new NotImplementedException();
     }
