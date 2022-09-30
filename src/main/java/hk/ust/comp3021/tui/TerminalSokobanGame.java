@@ -49,7 +49,7 @@ public class TerminalSokobanGame extends AbstractSokobanGame {
             } else {
                 this.renderingEngine.message("Unlimited");
             }
-
+            this.renderingEngine.message(">>>");
             var act = super.processAction(this.inputEngine.fetchAction());
             if (act instanceof ActionResult.Failed a) {
                 this.renderingEngine.message(a.getReason());
