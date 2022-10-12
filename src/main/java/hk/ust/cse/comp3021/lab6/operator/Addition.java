@@ -22,7 +22,7 @@ public class Addition implements Operator{
         if (operands.get(0) == null) {
             operands.set(0, new IntNumber("0"));
         }
-        return new IntNumber(new BigInteger(((IntNumber)operands.get(0).eval()).toString()).add(new BigInteger(((IntNumber)operands.get(1).eval()).toString())));
+        return new IntNumber(new BigInteger(((IntNumber)operands.get(0)).toString()).add(new BigInteger(((IntNumber)operands.get(1)).toString())));
     }
 
     @Override

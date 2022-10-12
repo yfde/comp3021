@@ -23,7 +23,7 @@ public class Exponent implements Operator{
         if (operands.get(0) == null) {
             operands.set(0, new IntNumber("1"));
         }
-        return new IntNumber(new BigInteger(((IntNumber)operands.get(0).eval()).toString()).pow(Integer.valueOf(((IntNumber)operands.get(1).eval()).toString())));
+        return new IntNumber(new BigInteger(((IntNumber)operands.get(0)).toString()).pow(Integer.parseInt(((IntNumber)operands.get(1)).toString())));
     }
 
     @Override

@@ -22,7 +22,7 @@ public class Multiplication implements Operator {
         if (operands.get(0) == null) {
             operands.set(0, new IntNumber("1"));
         }
-        return new IntNumber(new BigInteger(((IntNumber)operands.get(0).eval()).toString()).multiply(new BigInteger(((IntNumber)operands.get(1).eval()).toString())));
+        return new IntNumber(new BigInteger(((IntNumber)operands.get(0)).toString()).multiply(new BigInteger(((IntNumber)operands.get(1)).toString())));
     }
 
     @Override

@@ -26,7 +26,7 @@ public class Division implements Operator{
         if (operands.get(0) == null) {
             operands.set(0, new IntNumber("1"));
         }
-        return new IntNumber(new BigInteger(((IntNumber)operands.get(0).eval()).toString()).divide(new BigInteger(((IntNumber)operands.get(1).eval()).toString())));
+        return new IntNumber(new BigInteger(((IntNumber)operands.get(0)).toString()).divide(new BigInteger(((IntNumber)operands.get(1)).toString())));
     }
 
     @Override

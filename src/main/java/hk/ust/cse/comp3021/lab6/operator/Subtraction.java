@@ -24,7 +24,7 @@ public class Subtraction implements Operator {
         if (operands.get(0) == null) {
             operands.set(0, new IntNumber("0"));
         }
-        return new IntNumber(new BigInteger(((IntNumber)operands.get(0).eval()).toString()).subtract(new BigInteger(((IntNumber)operands.get(1).eval()).toString())));
+        return new IntNumber(new BigInteger(((IntNumber)operands.get(0)).toString()).subtract(new BigInteger(((IntNumber)operands.get(1)).toString())));
     }
 
     @Override
