@@ -24,4 +24,22 @@ public class IntNumber implements Value {
     public IntNumber(String val) {
         this.val = new BigInteger(val);
     }
+
+    @Override
+    public String toString() {
+        return this.val.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof IntNumber) {
+            return ((IntNumber) o).val.equals(this.val);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.val.hashCode();
+    }
 }

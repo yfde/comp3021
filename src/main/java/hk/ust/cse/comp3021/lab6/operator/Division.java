@@ -19,6 +19,18 @@ import java.util.List;
  * Otherwise, divide the first operand by the rest of operands.
  */
 
-public class Division {
+public class Division implements Operator{
 
+    @Override
+    public Value operate(List<Expression> operands) {
+        if (operands.get(0) == null) {
+            operands.set(0, new IntNumber("1"));
+        }
+        return new IntNumber(new BigInteger(((IntNumber)operands.get(0).eval()).toString()).divide(new BigInteger(((IntNumber)operands.get(1).eval()).toString())));
+    }
+
+    @Override
+    public String symbol() {
+        return "/";
+    }
 }

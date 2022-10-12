@@ -15,6 +15,18 @@ import java.util.List;
  * Addition should implement {@link Operator}, and will be used to construct {@link Operation} objects.
  * All operands are instances of {@link IntNumber}.
  */
-public class Addition {
+public class Addition implements Operator{
 
+    @Override
+    public Value operate(List<Expression> operands) {
+        if (operands.get(0) == null) {
+            operands.set(0, new IntNumber("0"));
+        }
+        return new IntNumber(new BigInteger(((IntNumber)operands.get(0).eval()).toString()).add(new BigInteger(((IntNumber)operands.get(1).eval()).toString())));
+    }
+
+    @Override
+    public String symbol() {
+        return "+";
+    }
 }

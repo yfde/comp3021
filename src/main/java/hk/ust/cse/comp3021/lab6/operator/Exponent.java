@@ -6,6 +6,7 @@ import hk.ust.cse.comp3021.lab6.structure.Operator;
 import hk.ust.cse.comp3021.lab6.structure.Value;
 import hk.ust.cse.comp3021.lab6.value.IntNumber;
 
+import java.math.BigInteger;
 import java.util.List;
 
 
@@ -16,6 +17,17 @@ import java.util.List;
  * Hint: BigInteger.pow(int)
  */
 
-public class Exponent {
+public class Exponent implements Operator{
+    @Override
+    public Value operate(List<Expression> operands) {
+        if (operands.get(0) == null) {
+            operands.set(0, new IntNumber("1"));
+        }
+        return new IntNumber(new BigInteger(((IntNumber)operands.get(0).eval()).toString()).pow(Integer.valueOf(((IntNumber)operands.get(1).eval()).toString())));
+    }
 
+    @Override
+    public String symbol() {
+        return "^";
+    }
 }

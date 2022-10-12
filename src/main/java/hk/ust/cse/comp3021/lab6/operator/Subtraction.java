@@ -18,6 +18,17 @@ import java.util.List;
  * the first operand
  */
 
-public class Subtraction {
+public class Subtraction implements Operator {
+    @Override
+    public Value operate(List<Expression> operands) {
+        if (operands.get(0) == null) {
+            operands.set(0, new IntNumber("0"));
+        }
+        return new IntNumber(new BigInteger(((IntNumber)operands.get(0).eval()).toString()).subtract(new BigInteger(((IntNumber)operands.get(1).eval()).toString())));
+    }
 
+    @Override
+    public String symbol() {
+        return "-";
+    }
 }
