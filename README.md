@@ -138,13 +138,25 @@ If any uncaught exception occurs during the demonstration, you will get 0 for th
 
 We provide a reference implementation of this assignment (it is obfuscated, and you won't see solutions in
 it) [here](https://course.cse.ust.hk/comp3021/assignments/Sokoban-proguard-PA2.jar).
-You can run it with the following command:
+But JavaFX is not packed in the reference implementation JAR file.
+You need to download the JavaFX manually
+
+### Download JavaFX
+
+You can download JavaFX from [here](https://gluonhq.com/products/javafx/).
+Remember to select the correct version of JavaFX.
+- `JavaFX Version`: >= 18
+- `Operating System`: choose according to your current computer
+- `Architecture`: choose according to your current computer
+- `Type`: SDK
+
+After downloading, unzip the downloaded file, and you will get a folder named `javafx-sdk-<version>`.
+
+### Run
 
 ```bash
-java --enable-preview -jar Sokoban-proguard-PA2.jar
+java --enable-preview -jar --module-path=/path/to/javafx-sdk-<version>/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.media,javafx.graphics Sokoban-proguard-PA2.jar
 ```
-
-We provide two sample game map in the `src/main/resources` folder.
 
 ## Run Check Style
 
