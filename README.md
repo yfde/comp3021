@@ -82,6 +82,7 @@ game.
 Users can choose to exit the game scene at any time, and the GUI view will switch back to the start scene.
 
 ### Demonstration Grading Rubrics
+If any uncaught exception occurs during the demonstration, you will get 0 for the corresponding functionality.
 
 - (40%) Start Scene
     - (2%) By default, two built-in maps (`map00.map` and `map01.map`) (at `src/main/resources`) should be preloaded into the
