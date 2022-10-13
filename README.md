@@ -157,7 +157,6 @@ After downloading, unzip the downloaded file, and you will get a folder named `j
 Run with the following command: (replace `{path-to-javafx-sdk-<version>}` with the path to the unzipped JavaFX SDK folder)
 
 ```bash
-```bash
 java --enable-preview -jar --module-path={path-to-javafx-sdk-<version>}/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.media,javafx.graphics Sokoban-proguard-PA2.jar
 ```
 
