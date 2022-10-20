@@ -85,6 +85,9 @@ public class Main extends Application {
     @Override
     public void start(@NotNull final Stage primaryStage) {
         // TODO
+        primaryStage.setTitle("Lab 7");
+        primaryStage.setScene(createBoardScene(getNumRowsFromArgs(), getNumColsFromArgs()));
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
@@ -101,7 +104,7 @@ public class Main extends Application {
     @NotNull
     private static Scene createBoardScene(final int numRows, final int numCols) {
         // TODO
-        return null;
+        return new Scene(createGridPane(numRows, numCols));
     }
 
     /**
@@ -130,7 +133,18 @@ public class Main extends Application {
     @NotNull
     private static GridPane createGridPane(final int numRows, final int numCols) {
         // TODO
-        return null;
+        GridPane grid = new GridPane();
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
+                if ((i+j)%2 == 0) {
+                    grid.add(createImageView(BLANK_CELL_IMAGE), i, j);
+                } else {
+                    grid.add(createImageView(WALL_CELL_IMAGE), i, j);
+                }
+
+            }
+        }
+        return grid;
     }
 
     /**
@@ -146,6 +160,9 @@ public class Main extends Application {
     @NotNull
     private static ImageView createImageView(@NotNull final Image image) {
         // TODO
-        return null;
+        ImageView img = new ImageView(image);
+        img.setFitHeight(CELL_SIZE);
+        img.setFitWidth(CELL_SIZE);
+        return img;
     }
 }
