@@ -137,9 +137,9 @@ public class Main extends Application {
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; j++) {
                 if ((i+j)%2 == 0) {
-                    grid.add(createImageView(BLANK_CELL_IMAGE), i, j);
+                    grid.add(createImageView(BLANK_CELL_IMAGE), j, i);
                 } else {
-                    grid.add(createImageView(WALL_CELL_IMAGE), i, j);
+                    grid.add(createImageView(WALL_CELL_IMAGE), j, i);
                 }
 
             }
