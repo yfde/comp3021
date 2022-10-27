@@ -17,7 +17,7 @@ public class EventSlicer {
      * the number of first events to record
      */
     int n;
-
+    ArrayList<EventEmitter.Event> events = new ArrayList<>();
     // TODO add fields as you like
 
     /**
@@ -26,6 +26,9 @@ public class EventSlicer {
      */
     EventSlicer(EventEmitter service, int n) {
         // TODO
+        this.service = (Lab8Service) service;
+        this.n = n;
+        service.addListener(e -> this.events.add(e));
     }
 
     /**
@@ -37,7 +40,12 @@ public class EventSlicer {
      */
     public List<EventEmitter.Event> firstNEventsNonBlock() {
         // TODO
-        throw new RuntimeException("implement me");
+        if (this.events.size() < this.n) {
+            return this.events;
+        } else {
+            return this.events.subList(0, this.n);
+        }
+        // throw new RuntimeException("implement me");
     }
 
     /**

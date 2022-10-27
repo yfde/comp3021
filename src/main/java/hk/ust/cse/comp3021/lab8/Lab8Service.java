@@ -76,5 +76,45 @@ interface TimeTicker extends EventEmitter {
  * Lab8Service support event emitting and time ticking.
  */
 public class Lab8Service implements TimeTicker {
+    private ArrayList<Listener> listeners = new ArrayList<>();
+    private ArrayList<Timer> timers = new ArrayList<>();
+
+    @Override
+    public void addListener(Listener listener) {
+        this.listeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(Listener listener) {
+        this.listeners.remove(listener);
+    }
+
+    @Override
+    public void emitEvent(Event event) {
+        for (var li : this.listeners) {
+            li.handle(event);
+        }
+    }
+
+    @Override
+    public void startTick(Duration interval) {
+        var timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                emitEvent(new Event(new Date()));
+            }
+        }, 0, interval.toMillis());
+        this.timers.add(timer);
+    }
+
+    @Override
+    public void stopTick() {
+        for (var timer : this.timers) {
+            timer.cancel();
+        }
+        this.timers.clear();
+    }
     // TODO implement this class
+
 }
