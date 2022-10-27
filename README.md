@@ -136,8 +136,8 @@ If any uncaught exception occurs during the demonstration, you will get 0 for th
 
 ## Reference Implementation
 
-We provide a demostration of reference implementation of this assignment. 
-The demostration video can be found on [YouTube](https://youtu.be/LiIyaaoaWxI).
+We provide a demonstration of reference implementation of this assignment. 
+The demonstration video can be found on [YouTube](https://youtu.be/LiIyaaoaWxI).
 
 ### Download JavaFX
 
