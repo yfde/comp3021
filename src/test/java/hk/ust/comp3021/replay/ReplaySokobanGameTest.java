@@ -185,7 +185,7 @@ class ReplaySokobanGameTest {
                 new Move.Up(0)
         );
         final var renderTimes = new ArrayList<Date>();
-        when(inputEngine.fetchAction()).thenAnswer(new RandomlyPausedActionProducer(900, 1100, actions));
+        when(inputEngine.fetchAction()).thenAnswer(new RandomlyPausedActionProducer(90, 110, actions));
         doAnswer(invocation -> {
             renderTimes.add(new Date());
             return null;
@@ -264,7 +264,7 @@ class RandomlyPausedActionProducer implements Answer<Action> {
     @Override
     public synchronized Action answer(InvocationOnMock invocation) throws Throwable {
         if (this.pauseUpperBound > 0)
-            Thread.sleep(new Random().nextInt(this.pauseUpperBound));
+            Thread.sleep(new Random().nextInt(this.pauseLowerBound, this.pauseUpperBound));
         return produce();
     }
 }
