@@ -39,7 +39,7 @@ For example, a student CHAN, Tai Man with ITSC ID `tmchanaa` having a repository
 at `https://github.com/tai-man-chan/COMP3021-PA3` should submit a file named `tmchanaa.txt` with the following content:
 
 ```text
-https://github.com/tai-man-chan/COMP3021-PA2
+https://github.com/tai-man-chan/COMP3021-PA3
 ```
 
 Note that we are using automatic scripts to process your submission.
