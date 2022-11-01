@@ -23,7 +23,7 @@ class ReplaySokobanGameTest {
         final var gameState = mock(GameState.class);
         final var inputEngine = mock(InputEngine.class);
         final var renderingEngine = mock(RenderingEngine.class);
-        final var game = new TestGame(gameState, new InputEngine[]{inputEngine}, renderingEngine);
+        final var game = new TestGame(gameState, List.of(inputEngine), renderingEngine);
 
         final var renderThreadIds = new ConcurrentLinkedQueue<Long>();
         doAnswer(invocation -> {
@@ -32,7 +32,7 @@ class ReplaySokobanGameTest {
             return null;
         }).when(renderingEngine).render(any());
         when(inputEngine.fetchAction())
-            .thenAnswer(new RandomlyPausedActionProducer(new Move.Right(0), new Exit()));
+                .thenAnswer(new RandomlyPausedActionProducer(new Move.Right(0), new Exit()));
 
         game.run();
 
@@ -52,7 +52,7 @@ class ReplaySokobanGameTest {
         final var inputEngine1 = mock(InputEngine.class);
         final var inputEngine2 = mock(InputEngine.class);
         final var renderingEngine = mock(RenderingEngine.class);
-        final var game = new TestGame(gameState, new InputEngine[]{inputEngine0, inputEngine1, inputEngine2}, renderingEngine);
+        final var game = new TestGame(gameState, List.of(inputEngine0, inputEngine1, inputEngine2), renderingEngine);
 
         final var threadIds0 = new ConcurrentLinkedQueue<Long>();
         final var threadIds1 = new ConcurrentLinkedQueue<Long>();
@@ -108,7 +108,7 @@ class ReplaySokobanGameTest {
         final var inputEngine0 = mock(StreamInputEngine.class);
         final var inputEngine1 = mock(StreamInputEngine.class);
         final var renderingEngine = mock(RenderingEngine.class);
-        final var game = spy(new TestGame(gameState, new InputEngine[]{inputEngine0, inputEngine1}, renderingEngine));
+        final var game = spy(new TestGame(gameState, List.of(inputEngine0, inputEngine1), renderingEngine));
 
         final var actions0 = Arrays.<Action>asList(new Move.Left(0), new Move.Right(0), new Move.Right(0), new Move.Right(0), new Move.Down(0), new Move.Up(0));
         final var actions1 = Arrays.<Action>asList(new Move.Left(1), new Move.Right(1), new Move.Right(1), new Move.Right(1), new Move.Down(1), new Move.Up(1));
@@ -135,7 +135,7 @@ class ReplaySokobanGameTest {
         final var inputEngine1 = mock(StreamInputEngine.class);
         final var inputEngine2 = mock(StreamInputEngine.class);
         final var renderingEngine = mock(RenderingEngine.class);
-        final var inputEngines = new InputEngine[]{inputEngine0, inputEngine1, inputEngine2};
+        final var inputEngines = List.of(inputEngine0, inputEngine1, inputEngine2);
         final var game = spy(new TestGame(ReplaySokobanGame.Mode.ROUND_ROBIN, gameState, inputEngines, renderingEngine));
 
         final var actions0 = Arrays.<Action>asList(new Move.Down(0), new Move.Right(0), new Move.Left(0), new Move.Up(0), new Move.Down(0));
@@ -156,8 +156,8 @@ class ReplaySokobanGameTest {
 
         int i = 0;
         while (i < actions0.size() && i < actions1.size()) {
-            final var round = i % inputEngines.length;
-            final var index = i / inputEngines.length;
+            final var round = i % inputEngines.size();
+            final var index = i / inputEngines.size();
             final var actionList = actionsLists[round];
             if (index < actionList.size()) {
                 assertEquals(actionList.get(index), processActions.get(i));
@@ -175,14 +175,14 @@ class ReplaySokobanGameTest {
         final var gameState = mock(GameState.class);
         final var inputEngine = mock(InputEngine.class);
         final var renderingEngine = mock(RenderingEngine.class);
-        final var game = new TestGame(ReplaySokobanGame.Mode.FREE_RACE, fps, gameState, new InputEngine[]{inputEngine}, renderingEngine);
+        final var game = new TestGame(ReplaySokobanGame.Mode.FREE_RACE, fps, gameState, List.of(inputEngine), renderingEngine);
 
         final var actions = Arrays.<Action>asList(
-            new Move.Down(0),
-            new Move.Right(0),
-            new Move.Right(0),
-            new Move.Left(0),
-            new Move.Up(0)
+                new Move.Down(0),
+                new Move.Right(0),
+                new Move.Right(0),
+                new Move.Left(0),
+                new Move.Up(0)
         );
         final var renderTimes = new ArrayList<Date>();
         when(inputEngine.fetchAction()).thenAnswer(new RandomlyPausedActionProducer(900, 1100, actions));
@@ -201,15 +201,15 @@ class ReplaySokobanGameTest {
 }
 
 class TestGame extends ReplaySokobanGame {
-    public TestGame(GameState gameState, InputEngine[] inputEngines, RenderingEngine renderingEngine) {
+    public TestGame(GameState gameState, List<? extends InputEngine> inputEngines, RenderingEngine renderingEngine) {
         super(gameState, inputEngines, renderingEngine);
     }
 
-    public TestGame(Mode mode, GameState gameState, InputEngine[] inputEngines, RenderingEngine renderingEngine) {
+    public TestGame(Mode mode, GameState gameState, @NotNull List<? extends InputEngine> inputEngines, RenderingEngine renderingEngine) {
         super(mode, 60, gameState, inputEngines, renderingEngine);
     }
 
-    public TestGame(Mode mode, int fps, GameState gameState, InputEngine[] inputEngines, RenderingEngine renderingEngine) {
+    public TestGame(Mode mode, int fps, GameState gameState, @NotNull List<? extends InputEngine> inputEngines, RenderingEngine renderingEngine) {
         super(mode, fps, gameState, inputEngines, renderingEngine);
     }
 

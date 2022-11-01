@@ -9,6 +9,8 @@ import hk.ust.comp3021.game.InputEngine;
 import hk.ust.comp3021.game.RenderingEngine;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 import static hk.ust.comp3021.utils.StringResources.*;
 
 /**
@@ -41,9 +43,9 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
     }
 
     protected final Mode mode;
-    protected final int fps;
+    protected final int frameRate;
 
-    protected final InputEngine[] inputEngines;
+    protected final List<? extends InputEngine> inputEngines;
     protected final RenderingEngine renderingEngine;
 
     /**
@@ -51,23 +53,23 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
      * Each input engine corresponds to an action file and will produce actions from the action file.
      *
      * @param mode            The mode of the game.
-     * @param fps             Rendering fps.
+     * @param frameRate             Rendering fps.
      * @param gameState       The game state.
      * @param inputEngines    the input engines.
      * @param renderingEngine the rendering engine.
      * @throws IllegalArgumentException when there are more than two players in the map.
      */
     public ReplaySokobanGame(Mode mode,
-                             int fps,
+                             int frameRate,
                              @NotNull GameState gameState,
-                             @NotNull InputEngine[] inputEngines,
+                             @NotNull List<? extends InputEngine> inputEngines,
                              @NotNull RenderingEngine renderingEngine
     ) {
         super(gameState);
-        if (inputEngines.length == 0)
+        if (inputEngines.size() == 0)
             throw new IllegalArgumentException("No input engine specified");
         this.mode = mode;
-        this.fps = fps;
+        this.frameRate = frameRate;
         this.renderingEngine = renderingEngine;
         this.inputEngines = inputEngines;
     }
@@ -77,7 +79,7 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
      * @param inputEngines    the input engines.
      * @param renderingEngine the rendering engine.
      */
-    public ReplaySokobanGame(GameState gameState, InputEngine[] inputEngines, RenderingEngine renderingEngine) {
+    public ReplaySokobanGame(GameState gameState, List<? extends InputEngine> inputEngines, RenderingEngine renderingEngine) {
         this(Mode.FREE_RACE, 60, gameState, inputEngines, renderingEngine);
     }
 
@@ -143,7 +145,6 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
                 renderingEngine.render(state);
             } while (!shouldStop());
         }
-
     }
 
     /**

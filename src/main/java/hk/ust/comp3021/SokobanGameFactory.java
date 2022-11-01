@@ -3,15 +3,18 @@ package hk.ust.comp3021;
 import hk.ust.comp3021.game.GameMap;
 import hk.ust.comp3021.game.GameState;
 import hk.ust.comp3021.game.SokobanGame;
+import hk.ust.comp3021.replay.ReplaySokobanGame;
 import hk.ust.comp3021.replay.StreamInputEngine;
 import hk.ust.comp3021.replay.TerminalRenderingEngine;
-import hk.ust.comp3021.replay.ReplaySokobanGame;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Factory for creating Sokoban games
@@ -35,16 +38,19 @@ public class SokobanGameFactory {
     ) throws IOException {
         Path file = Path.of(mapFile);
         final var gameMap = loadGameMap(file);
-        final var inputEngines = new StreamInputEngine[actionFiles.length];
-        for (int i = 0; i < actionFiles.length; i++) {
-            inputEngines[i] = new StreamInputEngine(new FileInputStream(actionFiles[i]));
-        }
+        final var inputEngines = Arrays.stream(actionFiles).map(f -> {
+            try {
+                return new StreamInputEngine(new FileInputStream(f));
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toList());
         return new ReplaySokobanGame(
-            mode,
-            fps,
-            new GameState(gameMap),
-            inputEngines,
-            new TerminalRenderingEngine(System.out)
+                mode,
+                fps,
+                new GameState(gameMap),
+                inputEngines,
+                new TerminalRenderingEngine(System.out)
         );
     }
 
