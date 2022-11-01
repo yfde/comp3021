@@ -43,9 +43,24 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
     }
 
     protected final Mode mode;
+    /**
+     * Indicated the frame rate of the rendering engine (in FPS).
+     */
     protected final int frameRate;
 
+    /**
+     * Default frame rate.
+     */
+    protected static final int DEFAULT_FRAME_RATE = 60;
+
+    /**
+     * The list of input engines to fetch inputs.
+     */
     protected final List<? extends InputEngine> inputEngines;
+
+    /**
+     * The rendering engine to render the game status.
+     */
     protected final RenderingEngine renderingEngine;
 
     /**
@@ -53,17 +68,18 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
      * Each input engine corresponds to an action file and will produce actions from the action file.
      *
      * @param mode            The mode of the game.
-     * @param frameRate             Rendering fps.
+     * @param frameRate       Rendering fps.
      * @param gameState       The game state.
      * @param inputEngines    the input engines.
      * @param renderingEngine the rendering engine.
      * @throws IllegalArgumentException when there are more than two players in the map.
      */
-    public ReplaySokobanGame(Mode mode,
-                             int frameRate,
-                             @NotNull GameState gameState,
-                             @NotNull List<? extends InputEngine> inputEngines,
-                             @NotNull RenderingEngine renderingEngine
+    public ReplaySokobanGame(
+            @NotNull Mode mode,
+            int frameRate,
+            @NotNull GameState gameState,
+            @NotNull List<? extends InputEngine> inputEngines,
+            @NotNull RenderingEngine renderingEngine
     ) {
         super(gameState);
         if (inputEngines.size() == 0)
@@ -79,8 +95,11 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
      * @param inputEngines    the input engines.
      * @param renderingEngine the rendering engine.
      */
-    public ReplaySokobanGame(GameState gameState, List<? extends InputEngine> inputEngines, RenderingEngine renderingEngine) {
-        this(Mode.FREE_RACE, 60, gameState, inputEngines, renderingEngine);
+    public ReplaySokobanGame(
+            @NotNull GameState gameState,
+            @NotNull List<? extends InputEngine> inputEngines,
+            @NotNull RenderingEngine renderingEngine) {
+        this(Mode.FREE_RACE, DEFAULT_FRAME_RATE, gameState, inputEngines, renderingEngine);
     }
 
     // TODO: add any method or field you need.
@@ -103,7 +122,7 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
         private final int index;
         private final InputEngine inputEngine;
 
-        private InputEngineRunnable(int index, InputEngine inputEngine) {
+        private InputEngineRunnable(int index, @NotNull InputEngine inputEngine) {
             this.index = index;
             this.inputEngine = inputEngine;
         }

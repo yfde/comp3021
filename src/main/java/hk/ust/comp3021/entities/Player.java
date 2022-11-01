@@ -6,6 +6,13 @@ import java.util.Objects;
  * Denotes a player.
  */
 public final class Player extends Entity {
+
+    /**
+     * Converts a player id to its char representation.
+     *
+     * @param id The player ID.
+     * @return The char representation.
+     */
     public static char idToChar(int id) {
         return (char) ('A' + id);
     }

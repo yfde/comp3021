@@ -12,6 +12,9 @@ public final class Undo extends Action {
         super(initiator);
     }
 
+    /**
+     * Default constructor.
+     */
     public Undo() {
         this(-1);
     }

@@ -21,7 +21,7 @@ public class TerminalRenderingEngine implements RenderingEngine {
     /**
      * @param outputSteam The {@link PrintStream} to write the output to.
      */
-    public TerminalRenderingEngine(PrintStream outputSteam) {
+    public TerminalRenderingEngine(@NotNull PrintStream outputSteam) {
         this.outputSteam = outputSteam;
     }
 

@@ -44,7 +44,7 @@ public class GameMap {
      *                     0 means undo is not allowed.
      *                     -1 means unlimited. Other negative numbers are not allowed.
      */
-    public GameMap(int maxWidth, int maxHeight, Set<Position> destinations, int undoLimit) {
+    public GameMap(int maxWidth, int maxHeight, @NotNull Set<Position> destinations, int undoLimit) {
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
         this.destinations = Collections.unmodifiableSet(destinations);
@@ -138,18 +138,18 @@ public class GameMap {
         // validate closed boundary map
         final var moves = new Move[]{new Move.Down(-1), new Move.Up(-1), new Move.Left(-1), new Move.Right(-1)};
         final var closedBoundary = map.entrySet().parallelStream()
-            .filter(entry -> !(entry.getValue() instanceof Wall))
-            .allMatch(entry -> Arrays.stream(moves)
-                .allMatch(m -> map.get(m.nextPosition(entry.getKey())) != null));
+                .filter(entry -> !(entry.getValue() instanceof Wall))
+                .allMatch(entry -> Arrays.stream(moves)
+                        .allMatch(m -> map.get(m.nextPosition(entry.getKey())) != null));
         if (!closedBoundary)
             throw new IllegalArgumentException("not a closed boundary map");
 
         final var allBoxes = map.values().stream()
-            .filter(Box.class::isInstance)
-            .map(Box.class::cast).toList();
+                .filter(Box.class::isInstance)
+                .map(Box.class::cast).toList();
         final var allReferencedPlayers = allBoxes.stream()
-            .map(Box::getPlayerId)
-            .collect(Collectors.toSet());
+                .map(Box::getPlayerId)
+                .collect(Collectors.toSet());
         if (undoLimit < -1)
             throw new IllegalArgumentException("invalid undo limit");
         if (players.size() == 0)
@@ -207,9 +207,9 @@ public class GameMap {
      */
     public Set<Integer> getPlayerIds() {
         return this.map.values().stream()
-            .filter(it -> it instanceof Player)
-            .map(it -> ((Player) it).getId())
-            .collect(Collectors.toSet());
+                .filter(it -> it instanceof Player)
+                .map(it -> ((Player) it).getId())
+                .collect(Collectors.toSet());
     }
 
     /**

@@ -20,7 +20,10 @@ public class StreamInputEngine implements InputEngine {
 
     private final int playerId;
 
-    public StreamInputEngine(InputStream fileStream) {
+    /**
+     * @param fileStream The stream for reading the input file.
+     */
+    public StreamInputEngine(@NotNull InputStream fileStream) {
         this.terminalScanner = new Scanner(fileStream);
         this.playerId = Integer.parseInt(terminalScanner.nextLine());
     }
@@ -48,7 +51,12 @@ public class StreamInputEngine implements InputEngine {
         }
     }
 
-    public static Action char2Action(int playerId, Character s) {
+    /**
+     * @param playerId The ID of the player.
+     * @param s        The character denoting the action.
+     * @return The corresponding action.
+     */
+    public static Action char2Action(int playerId, char s) {
         return switch (s) {
             case 'H', 'h' -> new Move.Left(playerId);
             case 'J', 'j' -> new Move.Down(playerId);

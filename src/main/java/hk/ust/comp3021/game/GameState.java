@@ -68,9 +68,9 @@ public class GameState {
      */
     public @NotNull Set<Player> getAllPlayers() {
         return this.entities.values().stream()
-            .filter(entity -> entity instanceof Player)
-            .map(entity -> (Player) entity)
-            .collect(Collectors.toSet());
+                .filter(entity -> entity instanceof Player)
+                .map(entity -> (Player) entity)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -81,9 +81,9 @@ public class GameState {
      */
     public @Nullable Position getPlayerPositionById(int id) {
         return this.entities.entrySet().stream()
-            .filter(e -> e.getValue() instanceof Player p && p.getId() == id)
-            .map(Map.Entry::getKey)
-            .findFirst().orElse(null);
+                .filter(e -> e.getValue() instanceof Player p && p.getId() == id)
+                .map(Map.Entry::getKey)
+                .findFirst().orElse(null);
     }
 
     /**
@@ -93,9 +93,9 @@ public class GameState {
      */
     public @NotNull Set<Position> getAllPlayerPositions() {
         return this.entities.entrySet().stream()
-            .filter(e -> e.getValue() instanceof Player)
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toSet());
+                .filter(e -> e.getValue() instanceof Player)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -151,7 +151,7 @@ public class GameState {
      * @param from The current position of the entity to move.
      * @param to   The position to move the entity to.
      */
-    public void move(Position from, Position to) {
+    public void move(@NotNull Position from, @NotNull Position to) {
         // move entity
         final var entity = this.entities.remove(from);
         this.entities.put(from, new Empty());
@@ -183,13 +183,13 @@ public class GameState {
      */
     private void applyTransition(Transition transition) {
         transition.moves.entrySet().stream()
-            .map(e -> {
-                final var entity = this.entities.remove(e.getKey());
-                this.entities.put(e.getKey(), new Empty());
-                return Map.entry(e.getValue(), entity);
-            })
-            .toList()
-            .forEach(e -> this.entities.put(e.getKey(), e.getValue()));
+                .map(e -> {
+                    final var entity = this.entities.remove(e.getKey());
+                    this.entities.put(e.getKey(), new Empty());
+                    return Map.entry(e.getValue(), entity);
+                })
+                .toList()
+                .forEach(e -> this.entities.put(e.getKey(), e.getValue()));
     }
 
     /**
@@ -235,9 +235,9 @@ public class GameState {
 
         private void add(Position from, Position to) {
             final var key = this.moves.entrySet().stream()
-                .filter(e -> e.getValue().equals(from))
-                .map(Map.Entry::getKey)
-                .findFirst().orElse(from);
+                    .filter(e -> e.getValue().equals(from))
+                    .map(Map.Entry::getKey)
+                    .findFirst().orElse(from);
             this.moves.put(key, to);
         }
 
@@ -257,8 +257,8 @@ public class GameState {
         @Override
         public String toString() {
             final var moves = this.moves.entrySet().stream()
-                .map(e -> String.format("(%d,%d)->(%d,%d)", e.getKey().x(), e.getKey().y(), e.getValue().x(), e.getValue().y()))
-                .toList();
+                    .map(e -> String.format("(%d,%d)->(%d,%d)", e.getKey().x(), e.getKey().y(), e.getValue().x(), e.getValue().y()))
+                    .toList();
             return String.join(",", moves);
         }
     }
@@ -268,10 +268,10 @@ public class GameState {
         if (this == o) return true;
         if (!(o instanceof GameState gameState)) return false;
         return boardWidth == gameState.boardWidth &&
-            boardHeight == gameState.boardHeight &&
-            undoQuota == gameState.undoQuota &&
-            entities.equals(gameState.entities) &&
-            destinations.equals(gameState.destinations);
+                boardHeight == gameState.boardHeight &&
+                undoQuota == gameState.undoQuota &&
+                entities.equals(gameState.entities) &&
+                destinations.equals(gameState.destinations);
     }
 
     @Override

@@ -12,6 +12,9 @@ public final class Exit extends Action {
         super(initiator);
     }
 
+    /**
+     * Default constructor.
+     */
     public Exit() {
         this(-1);
     }

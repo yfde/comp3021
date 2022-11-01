@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
  * An actions of moving a player.
  */
 public abstract sealed class Move extends Action permits Move.Down, Move.Left, Move.Right, Move.Up {
+
     protected Move(int initiator) {
         super(initiator);
     }

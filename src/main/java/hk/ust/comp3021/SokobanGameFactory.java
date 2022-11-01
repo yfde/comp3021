@@ -24,16 +24,16 @@ public class SokobanGameFactory {
     /**
      * Create a Sokoban game.
      *
-     * @param mapFile     map file.
-     * @param mode        mode of the game.
-     * @param fps         rendering fps.
-     * @param actionFiles action files.
+     * @param mapFile     Map file.
+     * @param mode        Mode of the game.
+     * @param frameRate   Rendering frameRate.
+     * @param actionFiles Action files.
      * @return The Sokoban game.
      * @throws IOException if mapFile cannot be load
      */
     public static @NotNull SokobanGame createReplayGame(@NotNull String mapFile,
-                                                        ReplaySokobanGame.Mode mode,
-                                                        int fps,
+                                                        @NotNull ReplaySokobanGame.Mode mode,
+                                                        int frameRate,
                                                         @NotNull String[] actionFiles
     ) throws IOException {
         Path file = Path.of(mapFile);
@@ -47,7 +47,7 @@ public class SokobanGameFactory {
         }).collect(Collectors.toList());
         return new ReplaySokobanGame(
                 mode,
-                fps,
+                frameRate,
                 new GameState(gameMap),
                 inputEngines,
                 new TerminalRenderingEngine(System.out)
