@@ -86,7 +86,7 @@ java -jar Sokoban-PA3.jar 3 map02.map FREE_RACE 60 actions0.txt actions1.txt
 It means that the game will take `map02.map` as `GameMap`.
 Suppose there are two players in the game map, `actions0.txt` and `actions1.txt` files specifies the actions of the two players, respectively.
 The number `3` means that the game will be repeatedly replayed for 3 times in parallel.
-The remaining two arguments `FREE_RACE` and `60` are the game replay mode and the FPS (frames per second) of rendering, respectively.
+The remaining two arguments `FREE_RACE` and `60` are the game replay mode and the frameRate (frames per second) of rendering, respectively.
 They are to be explained in [Multithreading Architecture](#Multithreading in ReplaySokobanGame).
 
 The `map02.map` may look like this:
@@ -168,9 +168,9 @@ There are two modes of scheduling between `InputEngine` threads: `FREE_RACE` and
 - `FREE_RACE`: the `InputEngine` threads perform actions concurrently without any scheduling in the order.
   In this mode, the final order of processed actions are arbitrary and may be different across different runs.
 
-**FPS**:
-The `RenderingEngine` thread renders the game state in a specified FPS (frames per second).
-In the example [above](#Functionality Design), the FPS is set to 60, which means the `RenderingEngine` thread will render the game state (invoke `render` method) 60 times per second.
+**Frame Rate**:
+The `RenderingEngine` thread renders the game state in a specified frameRate (frames per second).
+In the example [above](#Functionality Design), the frameRate is set to 60, which means the `RenderingEngine` thread will render the game state (invoke `render` method) 60 times per second.
 
 **Requirements**:
 - The game must be rendered at least once before the first action is performed (i.e., the initial state of the game must be rendered).
