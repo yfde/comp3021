@@ -3,6 +3,7 @@ package hk.ust.comp3021.gui.component.control;
 import hk.ust.comp3021.entities.Player;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
@@ -37,11 +38,13 @@ public class MovementButtonGroupController implements Initializable {
      */
     public void setPlayerImage(URL url) {
         // TODO
+        this.playerImage.setImage(new Image(url.toString()));
     }
 
     @FXML
     private void moveUp() {
         // TODO
+        playerControl.fireEvent(new MovementEvent(MovementEvent.MOVE_UP, player));
     }
 
     @FXML

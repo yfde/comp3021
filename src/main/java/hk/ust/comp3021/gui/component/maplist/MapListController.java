@@ -28,5 +28,6 @@ public class MapListController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // TODO
+        this.list.setCellFactory(o -> new MapListCell());
     }
 }

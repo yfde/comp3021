@@ -26,7 +26,6 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Sokoban Game - COMP3021 2022Fall");
-
         // TODO
     }
 

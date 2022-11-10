@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.input.DragEvent;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -36,6 +37,11 @@ public class StartController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // TODO
+        try {
+            this.mapList = new MapList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
@@ -22,6 +23,7 @@ public class CellController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // TODO
+
     }
 
     /**
@@ -30,6 +32,7 @@ public class CellController implements Initializable {
      */
     public void markAtDestination() {
         // TODO
+        this.mark.setText("✓");
     }
 
     /**
@@ -39,5 +42,6 @@ public class CellController implements Initializable {
      */
     public void setImage(@NotNull URL url) {
         // TODO
+        this.image.setImage(new Image(url.toString()));
     }
 }
