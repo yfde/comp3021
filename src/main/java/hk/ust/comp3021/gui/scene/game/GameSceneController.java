@@ -39,7 +39,6 @@ public class GameSceneController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // TODO
-
     }
 
     /**
@@ -54,6 +53,7 @@ public class GameSceneController implements Initializable {
         ));
 
         final var gameLoopThread = new Thread(game);
+        gameLoopThread.setDaemon(true);
         gameLoopThread.start();
     }
 
@@ -66,6 +66,6 @@ public class GameSceneController implements Initializable {
     @FXML
     public void onExit(ActionEvent event) {
         // TODO
-
+        this.gamePane.fireEvent(new ExitEvent());
     }
 }

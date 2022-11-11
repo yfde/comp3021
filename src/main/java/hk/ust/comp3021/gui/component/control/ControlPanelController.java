@@ -1,17 +1,25 @@
 package hk.ust.comp3021.gui.component.control;
 
 import hk.ust.comp3021.actions.Action;
+import hk.ust.comp3021.actions.Move;
+import hk.ust.comp3021.actions.Undo;
 import hk.ust.comp3021.entities.Player;
 import hk.ust.comp3021.game.InputEngine;
 import hk.ust.comp3021.utils.NotImplementedException;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.FlowPane;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Control logic for a {@link ControlPanel}.
@@ -22,6 +30,8 @@ public class ControlPanelController implements Initializable, InputEngine {
     @FXML
     private FlowPane playerControls;
 
+    BlockingQueue<Action> cache = new ArrayBlockingQueue<Action>(100);
+
     /**
      * Fetch the next action made by users.
      * All the actions performed by users should be cached in this class and returned by this method.
@@ -31,7 +41,12 @@ public class ControlPanelController implements Initializable, InputEngine {
     @Override
     public @NotNull Action fetchAction() {
         // TODO
-        throw new NotImplementedException();
+        try {
+            return this.cache.take();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        // throw new NotImplementedException();
     }
 
     /**
@@ -45,6 +60,11 @@ public class ControlPanelController implements Initializable, InputEngine {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // TODO
+        this.playerControls.addEventHandler(MyEvent.MY_EVENT, new EventHandler<MyEvent>() {
+            public void handle(MyEvent e) {
+                cache.add(e.move);
+            }
+        });
     }
 
     /**
@@ -55,7 +75,7 @@ public class ControlPanelController implements Initializable, InputEngine {
      */
     public void onUndo(ActionEvent event) {
         // TODO
-
+        this.cache.add(new Undo(0));
     }
 
     /**
@@ -67,6 +87,23 @@ public class ControlPanelController implements Initializable, InputEngine {
      */
     public void addPlayer(Player player, URL playerImageUrl) {
         // TODO
+        try {
+            var grid = new MovementButtonGroup();
+            grid.getController().setPlayer(player);
+            grid.getController().setPlayerImage(playerImageUrl);
+            this.playerControls.getChildren().add(grid);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static class MyEvent extends Event {
+        static EventType<MyEvent> MY_EVENT = new EventType<>("MY_EVENT");
+        private Move move;
+        MyEvent(Move move) {
+            super(MY_EVENT);
+            this.move = move;
+        }
     }
 
 }

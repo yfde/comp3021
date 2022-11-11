@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static hk.ust.comp3021.utils.StringResources.UNDO_QUOTA_TEMPLATE;
+import static hk.ust.comp3021.utils.StringResources.UNDO_QUOTA_UNLIMITED;
+
 /**
  * Control logic for a {@link GameBoard}.
  * <p>
@@ -44,24 +47,39 @@ public class GameBoardController implements RenderingEngine, Initializable {
     @Override
     public void render(@NotNull GameState state) {
         // TODO
-        this.undoQuota.setText(String.valueOf(state.getUndoQuota()));
-        for (int y = 0; y < state.getMapMaxHeight(); y++) {
-            for (int x = 0; x < state.getMapMaxWidth(); x++) {
-                final var entity = state.getEntity(Position.of(x, y));
-                try {
-                    var cell = new Cell();
-                    cell.getController().setImage( switch (entity) {
-                        case Wall ignored -> Resource.getWallImageURL();
-                        case Box b -> Resource.getBoxImageURL(b.getPlayerId());
-                        case Player p -> Resource.getPlayerImageURL(p.getId());
-                        case Empty ignored, null -> Resource.getEmptyImageURL();
-                    });
-                    this.map.add(cell, x, y);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+        Platform.runLater(() -> {
+            this.undoQuota.setText(state.getUndoQuota()
+                    .map(it -> String.format(UNDO_QUOTA_TEMPLATE, it))
+                    .orElse(UNDO_QUOTA_UNLIMITED));
+            for (int y = 0; y < state.getMapMaxHeight(); y++) {
+                for (int x = 0; x < state.getMapMaxWidth(); x++) {
+                    final var entity = state.getEntity(Position.of(x, y));
+                    try {
+                        var cell = new Cell();
+                        cell.getController().setImage(switch (entity) {
+                            case Wall ignored -> Resource.getWallImageURL();
+                            case Box b -> {
+                                if (state.getDestinations().contains(Position.of(x, y))) {
+                                    cell.getController().markAtDestination();
+                                }
+                                yield Resource.getBoxImageURL(b.getPlayerId());
+                            }
+                            case Player p -> Resource.getPlayerImageURL(p.getId());
+                            case Empty ignored, null -> {
+                                if (state.getDestinations().contains(Position.of(x, y))) {
+                                    yield Resource.getDestinationImageURL();
+                                } else {
+                                    yield Resource.getEmptyImageURL();
+                                }
+                            }
+                        });
+                        this.map.add(cell, x, y);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
-        }
+        });
     }
 
     /**

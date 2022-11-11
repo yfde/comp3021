@@ -1,5 +1,7 @@
 package hk.ust.comp3021.gui.component.maplist;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
@@ -13,6 +15,8 @@ import java.util.ResourceBundle;
 public class MapListController implements Initializable {
     @FXML
     private ListView<MapModel> list;
+
+//    private ObservableList<MapModel> maps = FXCollections.observableArrayList();
 
     /**
      * Initialize the controller.
@@ -29,5 +33,9 @@ public class MapListController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // TODO
         this.list.setCellFactory(o -> new MapListCell());
+    }
+
+    public ListView<MapModel> getList() {
+        return list;
     }
 }

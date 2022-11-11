@@ -2,12 +2,18 @@ package hk.ust.comp3021.gui.scene.start;
 
 import hk.ust.comp3021.gui.component.maplist.MapEvent;
 import hk.ust.comp3021.gui.component.maplist.MapList;
+import hk.ust.comp3021.gui.component.maplist.MapListController;
+import hk.ust.comp3021.gui.component.maplist.MapModel;
+import hk.ust.comp3021.gui.utils.Message;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.TransferMode;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -37,11 +43,15 @@ public class StartController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // TODO
+        var list = this.mapList.getController().getList();
         try {
-            this.mapList = new MapList();
+            list.getItems().add(MapModel.load(getClass().getClassLoader().getResource("map00.map")));
+            list.getItems().add(MapModel.load(getClass().getClassLoader().getResource("map01.map")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        this.openButton.disableProperty().bind(list.getSelectionModel().selectedItemProperty().isNull());
+        this.deleteButton.disableProperty().bind(list.getSelectionModel().selectedItemProperty().isNull());
     }
 
     /**
@@ -54,6 +64,22 @@ public class StartController implements Initializable {
     @FXML
     private void onLoadMapBtnClicked(ActionEvent event) {
         // TODO
+        var fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Map File...");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Map Files", "*.map"),
+                new FileChooser.ExtensionFilter("All Files", "*.*"));
+        fileChooser.setInitialDirectory(new File("./"));
+        var file = fileChooser.showOpenDialog(this.openButton.getScene().getWindow());
+        try {
+            // load mapModel from file url
+            var list = this.mapList.getController().getList();
+            var map = MapModel.load(file.toURI().toURL());
+            list.getItems().removeIf(item -> item.file().equals(map.file()));
+            list.getItems().add(0, map);
+        } catch (IOException | RuntimeException e) {
+            Message.error("Failed to load game map file", e.getMessage());
+        }
     }
 
     /**
@@ -63,6 +89,8 @@ public class StartController implements Initializable {
     @FXML
     public void onDeleteMapBtnClicked() {
         // TODO
+        var list = this.mapList.getController().getList();
+        list.getItems().remove(list.getSelectionModel().selectedItemProperty().get());
     }
 
     /**
@@ -73,6 +101,8 @@ public class StartController implements Initializable {
     @FXML
     public void onOpenMapBtnClicked() {
         // TODO
+        var list = this.mapList.getController().getList();
+        this.mapList.fireEvent(new MapEvent(MapEvent.OPEN_MAP_EVENT_TYPE, list.getSelectionModel().selectedItemProperty().get()));
     }
 
     /**
@@ -84,6 +114,9 @@ public class StartController implements Initializable {
     @FXML
     public void onDragOver(DragEvent event) {
         // TODO
+        if (event.getDragboard().hasFiles()) {
+            event.acceptTransferModes(TransferMode.COPY);
+        }
     }
 
     /**
@@ -99,6 +132,16 @@ public class StartController implements Initializable {
     @FXML
     public void onDragDropped(DragEvent dragEvent) {
         // TODO
+        var list = this.mapList.getController().getList();
+        for (var file : dragEvent.getDragboard().getFiles()) {
+            try {
+                var map = MapModel.load(file.toURI().toURL());
+                list.getItems().removeIf(item -> item.file().equals(map.file()));
+                list.getItems().add(0, map);
+            } catch (IOException | RuntimeException e) {
+                Message.error("Failed to load game map file", e.getMessage());
+            }
+        }
     }
 
 }

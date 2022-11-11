@@ -1,5 +1,6 @@
 package hk.ust.comp3021.gui.component.control;
 
+import hk.ust.comp3021.actions.Move;
 import hk.ust.comp3021.entities.Player;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -44,22 +45,25 @@ public class MovementButtonGroupController implements Initializable {
     @FXML
     private void moveUp() {
         // TODO
-        playerControl.fireEvent(new MovementEvent(MovementEvent.MOVE_UP, player));
+        this.playerControl.fireEvent(new ControlPanelController.MyEvent(new Move.Up(player.getId())));
     }
 
     @FXML
     private void moveDown() {
         // TODO
+        this.playerControl.fireEvent(new ControlPanelController.MyEvent(new Move.Down(player.getId())));
     }
 
     @FXML
     private void moveLeft() {
         // TODO
+        this.playerControl.fireEvent(new ControlPanelController.MyEvent(new Move.Left(player.getId())));
     }
 
     @FXML
     private void moveRight() {
         // TODO
+        this.playerControl.fireEvent(new ControlPanelController.MyEvent(new Move.Right(player.getId())));
     }
 
     @Override

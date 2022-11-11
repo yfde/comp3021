@@ -39,6 +39,7 @@ public class GUISokobanGame extends AbstractSokobanGame implements Runnable {
             renderingEngine.render(state);
         }
         // TODO: Display the win message.
+        renderingEngine.message(WIN_MESSAGE);
     }
 
 }
