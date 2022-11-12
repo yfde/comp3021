@@ -43,7 +43,7 @@ public class App extends Application {
 
     /**
      * Event handler for opening a map.
-     * Swith to the {@link GameScene} in the {@link this#primaryStage}.
+     * Switch to the {@link GameScene} in the {@link this#primaryStage}.
      *
      * @param event The event data related to the map being opened.
      */
@@ -57,7 +57,7 @@ public class App extends Application {
         try {
             this.primaryStage.setScene(new GameScene(gameState));
         } catch (IOException e) {
-            Message.error(e.toString(), "IO Exception");
+            Message.error("Failed to create the GameScene", e.getMessage());
         }
 
     }

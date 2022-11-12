@@ -1,13 +1,14 @@
 package hk.ust.comp3021.gui.component.control;
 
 import hk.ust.comp3021.actions.Action;
+import hk.ust.comp3021.actions.InvalidInput;
 import hk.ust.comp3021.actions.Move;
 import hk.ust.comp3021.actions.Undo;
 import hk.ust.comp3021.entities.Player;
 import hk.ust.comp3021.game.InputEngine;
+import hk.ust.comp3021.gui.utils.Message;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -29,7 +30,7 @@ public class ControlPanelController implements Initializable, InputEngine {
     @FXML
     private FlowPane playerControls;
 
-    BlockingQueue<Action> cache = new ArrayBlockingQueue<Action>(100);
+    BlockingQueue<Action> cache = new ArrayBlockingQueue<>(100);
 
     /**
      * Fetch the next action made by users.
@@ -43,7 +44,7 @@ public class ControlPanelController implements Initializable, InputEngine {
         try {
             return this.cache.take();
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            return new InvalidInput(0, "Failed to fetch action");
         }
     }
 
@@ -58,11 +59,7 @@ public class ControlPanelController implements Initializable, InputEngine {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // TODO
-        this.playerControls.addEventHandler(MyEvent.MY_EVENT, new EventHandler<MyEvent>() {
-            public void handle(MyEvent e) {
-                cache.add(e.move);
-            }
-        });
+        this.playerControls.addEventHandler(MyEvent.MY_EVENT, e -> cache.add(e.move));
     }
 
     /**
@@ -91,13 +88,13 @@ public class ControlPanelController implements Initializable, InputEngine {
             grid.getController().setPlayerImage(playerImageUrl);
             this.playerControls.getChildren().add(grid);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Message.error("Failed to load movement button group", e.getMessage());
         }
     }
 
     static class MyEvent extends Event {
         static EventType<MyEvent> MY_EVENT = new EventType<>("MY_EVENT");
-        private Move move;
+        private final Move move;
         MyEvent(Move move) {
             super(MY_EVENT);
             this.move = move;

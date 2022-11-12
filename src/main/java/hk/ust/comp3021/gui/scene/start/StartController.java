@@ -48,7 +48,7 @@ public class StartController implements Initializable {
             list.getItems().add(MapModel.load(Objects.requireNonNull(getClass().getClassLoader().getResource("map00.map"))));
             list.getItems().add(MapModel.load(Objects.requireNonNull(getClass().getClassLoader().getResource("map01.map"))));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Message.error("Failed to load the default game map files", e.getMessage());
         }
         this.openButton.disableProperty().bind(list.getSelectionModel().selectedItemProperty().isNull());
         this.deleteButton.disableProperty().bind(list.getSelectionModel().selectedItemProperty().isNull());
@@ -79,7 +79,7 @@ public class StartController implements Initializable {
             list.getItems().removeIf(item -> item.file().equals(map.file()));
             list.getItems().add(0, map);
         } catch (IOException | RuntimeException e) {
-            Message.error("Failed to load game map file", e.getMessage());
+            Message.error("Failed to load: " + file.getName(), e.getMessage());
         }
     }
 

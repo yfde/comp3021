@@ -78,7 +78,7 @@ public class GameBoardController implements RenderingEngine, Initializable {
                         });
                         this.map.add(cell, x, y);
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        Message.error("Failed to load cell.fxml", e.getMessage());
                     }
                 }
             }
