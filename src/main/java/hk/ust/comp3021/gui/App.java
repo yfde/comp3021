@@ -49,8 +49,13 @@ public class App extends Application {
      */
     public void onOpenMap(MapEvent event) {
         // TODO
+        var gameState = new GameState(event.getModel().gameMap());
+        if (gameState.getAllPlayers().size() > 4) {
+            Message.error("Too many players", "The maximum number of players is 4.");
+            return;
+        }
         try {
-            this.primaryStage.setScene(new GameScene(new GameState(event.getModel().gameMap())));
+            this.primaryStage.setScene(new GameScene(gameState));
         } catch (IOException e) {
             Message.error(e.toString(), "IO Exception");
         }

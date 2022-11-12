@@ -5,7 +5,6 @@ import hk.ust.comp3021.actions.Move;
 import hk.ust.comp3021.actions.Undo;
 import hk.ust.comp3021.entities.Player;
 import hk.ust.comp3021.game.InputEngine;
-import hk.ust.comp3021.utils.NotImplementedException;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -46,7 +45,6 @@ public class ControlPanelController implements Initializable, InputEngine {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        // throw new NotImplementedException();
     }
 
     /**

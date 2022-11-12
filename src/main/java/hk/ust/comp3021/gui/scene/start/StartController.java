@@ -2,7 +2,6 @@ package hk.ust.comp3021.gui.scene.start;
 
 import hk.ust.comp3021.gui.component.maplist.MapEvent;
 import hk.ust.comp3021.gui.component.maplist.MapList;
-import hk.ust.comp3021.gui.component.maplist.MapListController;
 import hk.ust.comp3021.gui.component.maplist.MapModel;
 import hk.ust.comp3021.gui.utils.Message;
 import javafx.event.ActionEvent;
@@ -16,6 +15,7 @@ import javafx.stage.FileChooser;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
@@ -45,8 +45,8 @@ public class StartController implements Initializable {
         // TODO
         var list = this.mapList.getController().getList();
         try {
-            list.getItems().add(MapModel.load(getClass().getClassLoader().getResource("map00.map")));
-            list.getItems().add(MapModel.load(getClass().getClassLoader().getResource("map01.map")));
+            list.getItems().add(MapModel.load(Objects.requireNonNull(getClass().getClassLoader().getResource("map00.map"))));
+            list.getItems().add(MapModel.load(Objects.requireNonNull(getClass().getClassLoader().getResource("map01.map"))));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -65,14 +65,15 @@ public class StartController implements Initializable {
     private void onLoadMapBtnClicked(ActionEvent event) {
         // TODO
         var fileChooser = new FileChooser();
-        fileChooser.setTitle("Select Map File...");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Map Files", "*.map"),
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
-        fileChooser.setInitialDirectory(new File("./"));
+        fileChooser.setInitialDirectory(new File("./src/main/resources"));
         var file = fileChooser.showOpenDialog(this.openButton.getScene().getWindow());
+        if (file == null) {
+            return;
+        }
         try {
-            // load mapModel from file url
             var list = this.mapList.getController().getList();
             var map = MapModel.load(file.toURI().toURL());
             list.getItems().removeIf(item -> item.file().equals(map.file()));
@@ -91,6 +92,7 @@ public class StartController implements Initializable {
         // TODO
         var list = this.mapList.getController().getList();
         list.getItems().remove(list.getSelectionModel().selectedItemProperty().get());
+        list.getSelectionModel().clearSelection();
     }
 
     /**
@@ -139,7 +141,7 @@ public class StartController implements Initializable {
                 list.getItems().removeIf(item -> item.file().equals(map.file()));
                 list.getItems().add(0, map);
             } catch (IOException | RuntimeException e) {
-                Message.error("Failed to load game map file", e.getMessage());
+                Message.error("Failed to load: " + file.getName(), e.getMessage());
             }
         }
     }

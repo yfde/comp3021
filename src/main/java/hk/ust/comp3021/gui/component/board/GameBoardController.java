@@ -54,6 +54,9 @@ public class GameBoardController implements RenderingEngine, Initializable {
             for (int y = 0; y < state.getMapMaxHeight(); y++) {
                 for (int x = 0; x < state.getMapMaxWidth(); x++) {
                     final var entity = state.getEntity(Position.of(x, y));
+                    if (entity == null) {
+                        continue;
+                    }
                     try {
                         var cell = new Cell();
                         cell.getController().setImage(switch (entity) {
@@ -65,7 +68,7 @@ public class GameBoardController implements RenderingEngine, Initializable {
                                 yield Resource.getBoxImageURL(b.getPlayerId());
                             }
                             case Player p -> Resource.getPlayerImageURL(p.getId());
-                            case Empty ignored, null -> {
+                            case Empty ignored -> {
                                 if (state.getDestinations().contains(Position.of(x, y))) {
                                     yield Resource.getDestinationImageURL();
                                 } else {
