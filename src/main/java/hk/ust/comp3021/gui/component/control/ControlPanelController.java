@@ -93,7 +93,7 @@ public class ControlPanelController implements Initializable, InputEngine {
     }
 
     static class MyEvent extends Event {
-        static EventType<MyEvent> MY_EVENT = new EventType<>("MY_EVENT");
+        static final EventType<MyEvent> MY_EVENT = new EventType<>("MY_EVENT");
         private final Move move;
         MyEvent(Move move) {
             super(MY_EVENT);
