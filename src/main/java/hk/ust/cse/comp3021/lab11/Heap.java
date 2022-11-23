@@ -23,7 +23,10 @@ public class Heap<T extends Comparable<T>> {
      */
     public T peek() {
         //TODO
-        return null; // replace this line with implementation
+        if (this.container.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return this.container.get(0); // replace this line with implementation
     }
 
     /**
@@ -34,7 +37,16 @@ public class Heap<T extends Comparable<T>> {
      */
     public T poll() {
         //TODO
-        return null; // replace this line with implementation
+        if (this.container.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        T temp = this.container.remove(0);
+        if (this.container.isEmpty()) {
+            return temp;
+        }
+        this.container.add(0, this.container.remove(this.container.size() - 1));
+        this.heapifyDown();
+        return temp; // replace this line with implementation
     }
 
     private void heapifyDown() {
@@ -60,6 +72,8 @@ public class Heap<T extends Comparable<T>> {
      */
     public void add(T obj) {
         //TODO
+        this.container.add(obj);
+        this.heapifyUp();
     }
 
     public void addAll(Collection<T> list) {
@@ -72,6 +86,11 @@ public class Heap<T extends Comparable<T>> {
      */
     private void heapifyUp() {
         // TODO
+        int pos = this.container.size() - 1;
+        while (hasParent(pos) && container.get(pos).compareTo(container.get(getParentIndex(pos))) < 0) {
+            swap(pos, getParentIndex(pos));
+            pos = getParentIndex(pos);
+        }
     }
 
     public int size() {
