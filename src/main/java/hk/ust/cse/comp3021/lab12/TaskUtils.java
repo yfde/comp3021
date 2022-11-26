@@ -28,7 +28,7 @@ public class TaskUtils {
     @NotNull
     public static Set<String> getDistinctSetOfTags(@NotNull final Stream<Task> stream) {
         // TODO
-        return Collections.emptySet();
+        return stream.flatMap(task -> task.getTags().stream()).collect(Collectors.toUnmodifiableSet());
     }
 
     /**
@@ -48,7 +48,7 @@ public class TaskUtils {
     @NotNull
     public static Set<String> getDistinctSetOfTitles(@NotNull final Stream<Task> stream) {
         // TODO
-        return Collections.emptySet();
+        return stream.map(Task::getTitle).collect(Collectors.toUnmodifiableSet());
     }
 
     /**
@@ -65,7 +65,7 @@ public class TaskUtils {
     @NotNull
     public static List<Task> getFirstTasks(@NotNull final Stream<Task> stream, final long count) {
         // TODO
-        return Collections.emptyList();
+        return stream.limit(count).toList();
     }
 
     /**
@@ -89,7 +89,7 @@ public class TaskUtils {
             final long count
     ) {
         // TODO
-        return Collections.emptyList();
+        return stream.filter(predicate).limit(count).toList();
     }
 
     /**
@@ -104,7 +104,7 @@ public class TaskUtils {
      */
     public static long countTasksWithEmptyDesc(@NotNull final Stream<Task> stream) {
         // TODO
-        return -1;
+        return stream.filter(task -> task.getDescription().isEmpty()).count();
     }
 
     /**
@@ -128,7 +128,7 @@ public class TaskUtils {
             @NotNull final Instant minTime
     ) {
         // TODO
-        return false;
+        return stream.filter(task -> task.getType() == type).allMatch(task -> task.getCreatedOn().isAfter(minTime));
     }
 
     /**
@@ -148,7 +148,7 @@ public class TaskUtils {
     @Nullable
     public static Task getFirstTaskWithTag(@NotNull final Stream<Task> stream, @NotNull final String tag) {
         // TODO
-        return null;
+        return stream.filter(task -> task.getTags().contains(tag)).findAny().orElse(null);
     }
 
     /**
@@ -168,7 +168,7 @@ public class TaskUtils {
     @Nullable
     public static Task getOldestTask(@NotNull final Stream<Task> stream) {
         // TODO
-        return null;
+        return stream.min(Comparator.comparing(Task::getCreatedOn)).orElse(null);
     }
 
     /**
@@ -188,7 +188,7 @@ public class TaskUtils {
     @NotNull
     public static List<Task> sortTasksByDescriptionLengthDesc(@NotNull final Stream<Task> stream) {
         // TODO
-        return Collections.emptyList();
+        return stream.sorted(Comparator.comparing(Task::getDescription).reversed()).toList();
     }
 
     /**
@@ -210,7 +210,7 @@ public class TaskUtils {
     @NotNull
     public static Map<UUID, Task> associateByUUID(@NotNull final Stream<Task> stream) {
         // TODO
-        return Collections.emptyMap();
+        return stream.collect(Collectors.toMap(Task::getId, Function.identity()));
     }
 
     /**
@@ -237,6 +237,24 @@ public class TaskUtils {
     @NotNull
     public static Map<String, List<Task>> associateTagsWithTask(@NotNull final Stream<Task> stream) {
         // TODO
-        return Collections.emptyMap();
+        return stream.reduce(new HashMap<>(), (map, task) -> {
+            task.getTags().forEach(tag -> {
+                if (map.containsKey(tag)) {
+                    map.get(tag).add(task);
+                } else {
+                    map.put(tag, new ArrayList<>(List.of(task)));
+                }
+            });
+            return map;
+        }, (map1, map2) -> {
+            map2.forEach((key, value) -> {
+                if (map1.containsKey(key)) {
+                    map1.get(key).addAll(value);
+                } else {
+                    map1.put(key, value);
+                }
+            });
+            return map1;
+        });
     }
 }
