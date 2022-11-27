@@ -9,6 +9,7 @@ import hk.ust.comp3021.game.InputEngine;
 import hk.ust.comp3021.game.RenderingEngine;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static hk.ust.comp3021.utils.StringResources.*;
@@ -103,6 +104,7 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
 
     // TODO: add any method or field you need.
 
+
     /**
      * The implementation of the Runnable for each input engine thread.
      * Each input engine should run in a separate thread.
@@ -129,6 +131,7 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
         @Override
         public void run() {
             // TODO: modify this method to implement the requirements.
+
             while (!shouldStop()) {
                 final var action = inputEngine.fetchAction();
                 final var result = processAction(action);
@@ -155,6 +158,7 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
         @Override
         public void run() {
             // TODO: modify this method to implement the requirements.
+
             do {
                 final var undoQuotaMessage = state.getUndoQuota()
                     .map(it -> String.format(UNDO_QUOTA_TEMPLATE, it))
@@ -173,6 +177,14 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
     @Override
     public void run() {
         // TODO
+        List<Thread> inputEngineThreads = new ArrayList<>();
+        for (int i = 0; i < inputEngines.size(); i++) {
+            Thread inputEngineThread = new Thread(new InputEngineRunnable(i, inputEngines.get(i)));
+            inputEngineThreads.add(inputEngineThread);
+            inputEngineThread.start();
+        }
+        Thread renderingEngineThread = new Thread(new RenderingEngineRunnable());
+        renderingEngineThread.start();
     }
 
 }
