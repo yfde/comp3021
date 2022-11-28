@@ -165,6 +165,11 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
                     .orElse(UNDO_QUOTA_UNLIMITED);
                 renderingEngine.message(undoQuotaMessage);
                 renderingEngine.render(state);
+                try {
+                    Thread.sleep(1000 / frameRate);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             } while (!shouldStop());
         }
     }
