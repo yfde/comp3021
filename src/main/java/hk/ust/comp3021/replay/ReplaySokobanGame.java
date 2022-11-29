@@ -107,7 +107,7 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
 
     private int currentInputEngine = 0;
 
-    private ArrayList<Integer> aliveInputEngines = new ArrayList<>();
+    private final ArrayList<Integer> aliveInputEngines = new ArrayList<>();
 
     private final Object fetchQueue = new Object();
 
@@ -142,7 +142,7 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
                     synchronized (fetchQueue) {
                         if (aliveInputEngines.get(currentInputEngine) == index) {
                             final var action = inputEngine.fetchAction();
-                            if (action instanceof Exit e) {
+                            if (action instanceof Exit) {
                                 aliveInputEngines.remove(Integer.valueOf(index));
                                 if (aliveInputEngines.size() == 0) {
                                     break;
@@ -169,7 +169,7 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
                     }
                 } else if (mode == Mode.FREE_RACE) {
                     final var action = inputEngine.fetchAction();
-                    if (action instanceof Exit e) {
+                    if (action instanceof Exit) {
                         synchronized (aliveInputEngines) {
                             aliveInputEngines.remove(Integer.valueOf(index));
                         }
@@ -186,8 +186,22 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
         }
     }
 
-    private synchronized ActionResult syncedProcessAction(@NotNull Action action) {
-         return processAction(action);
+    private ActionResult syncedProcessAction(@NotNull Action action) {
+        synchronized (state) {
+            return processAction(action);
+        }
+    }
+
+    private void syncedRender() {
+        synchronized (state) {
+            final var undoQuotaMessage = state.getUndoQuota()
+                    .map(it -> String.format(UNDO_QUOTA_TEMPLATE, it))
+                    .orElse(UNDO_QUOTA_UNLIMITED);
+            synchronized (renderingEngine) {
+                renderingEngine.message(undoQuotaMessage);
+                renderingEngine.render(state);
+            }
+        }
     }
 
     /**
@@ -210,18 +224,15 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
             double next = System.currentTimeMillis();
             do {
                 if (System.currentTimeMillis() >= next) {
-                    synchronized (state) {
-                        final var undoQuotaMessage = state.getUndoQuota()
-                                .map(it -> String.format(UNDO_QUOTA_TEMPLATE, it))
-                                .orElse(UNDO_QUOTA_UNLIMITED);
-                        synchronized (renderingEngine) {
-                            renderingEngine.message(undoQuotaMessage);
-                            renderingEngine.render(state);
-                        }
-                    }
+                    syncedRender();
                     next += period;
                 }
             } while (!shouldStop() && !aliveInputEngines.isEmpty());
+            syncedRender();
+            renderingEngine.message(GAME_EXIT_MESSAGE);
+            if (state.isWin()) {
+                renderingEngine.message(WIN_MESSAGE);
+            }
         }
     }
 
@@ -233,29 +244,28 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
     @Override
     public void run() {
         // TODO
-        currentInputEngine = 0;
         for (int i = 0; i < inputEngines.size(); i++) {
             aliveInputEngines.add(i);
         }
-        Thread renderingEngineThread = new Thread(new RenderingEngineRunnable());
-        renderingEngineThread.start();
-        List<Thread> inputEngineThreads = new ArrayList<>();
+        Thread renderThread = new Thread(new RenderingEngineRunnable());
+        renderThread.start();
+        List<Thread> inputThreads = new ArrayList<>();
         for (int i = 0; i < inputEngines.size(); i++) {
-            Thread inputEngineThread = new Thread(new InputEngineRunnable(i, inputEngines.get(i)));
-            inputEngineThreads.add(inputEngineThread);
-            inputEngineThread.start();
+            Thread inputThread = new Thread(new InputEngineRunnable(i, inputEngines.get(i)));
+            inputThreads.add(inputThread);
+            inputThread.start();
         }
         while (true) {
             if (shouldStop() || aliveInputEngines.isEmpty()) {
-                for (Thread inputEngineThread : inputEngineThreads) {
+                for (Thread inputThread : inputThreads) {
                     try {
-                        inputEngineThread.join();
+                        inputThread.join();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
                 try {
-                    renderingEngineThread.join();
+                    renderThread.join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
