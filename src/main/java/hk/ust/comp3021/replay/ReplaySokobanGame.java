@@ -11,6 +11,7 @@ import hk.ust.comp3021.game.RenderingEngine;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static hk.ust.comp3021.utils.StringResources.*;
@@ -107,7 +108,7 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
 
     private int currentInputEngine = 0;
 
-    private final ArrayList<Integer> aliveInputEngines = new ArrayList<>();
+    private final List<Integer> aliveInputEngines = Collections.synchronizedList(new ArrayList<>());
 
     private final Object fetchQueue = new Object();
 
@@ -170,9 +171,7 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
                 } else if (mode == Mode.FREE_RACE) {
                     final var action = inputEngine.fetchAction();
                     if (action instanceof Exit) {
-                        synchronized (aliveInputEngines) {
-                            aliveInputEngines.remove(Integer.valueOf(index));
-                        }
+                        aliveInputEngines.remove(Integer.valueOf(index));
                         break;
                     }
                     final var result = syncedProcessAction(action);
