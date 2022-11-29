@@ -137,7 +137,7 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
         @Override
         public void run() {
             // TODO: modify this method to implement the requirements.
-            while (!shouldStop()) {
+            while (!syncedIsWin()) {
                 if (mode == Mode.ROUND_ROBIN) {
                     synchronized (fetchQueue) {
                         if (aliveInputEngines.get(currentInputEngine) == index) {
@@ -204,6 +204,12 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
         }
     }
 
+    private boolean syncedIsWin() {
+        synchronized (state) {
+            return state.isWin();
+        }
+    }
+
     /**
      * The implementation of the Runnable for the rendering engine thread.
      * The rendering engine should run in a separate thread.
@@ -221,17 +227,40 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
         public void run() {
             // TODO: modify this method to implement the requirements.
             double period = 1000 / (float) frameRate;
+            double dt;
             double next = System.currentTimeMillis();
             do {
                 if (System.currentTimeMillis() >= next) {
-                    syncedRender();
                     next += period;
+                    syncedRender();
                 }
-            } while (!shouldStop() && !aliveInputEngines.isEmpty());
-            syncedRender();
-            renderingEngine.message(GAME_EXIT_MESSAGE);
-            if (state.isWin()) {
-                renderingEngine.message(WIN_MESSAGE);
+                dt = next - System.currentTimeMillis();
+                if (dt > 0) {
+                    try {
+                        Thread.sleep((long) dt);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } while (!syncedIsWin() && !aliveInputEngines.isEmpty());
+            next += period;
+            while (true) {
+                if (System.currentTimeMillis() >= next) {
+                    syncedRender();
+                    renderingEngine.message(GAME_EXIT_MESSAGE);
+                    if (state.isWin()) {
+                        renderingEngine.message(WIN_MESSAGE);
+                    }
+                    break;
+                }
+                dt = next - System.currentTimeMillis();
+                if (dt > 0) {
+                    try {
+                        Thread.sleep((long) dt);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
@@ -255,22 +284,20 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
             inputThreads.add(inputThread);
             inputThread.start();
         }
-        while (true) {
-            if (shouldStop() || aliveInputEngines.isEmpty()) {
-                for (Thread inputThread : inputThreads) {
-                    try {
-                        inputThread.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                try {
-                    renderThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                break;
+        while (!syncedIsWin() && !aliveInputEngines.isEmpty()) {
+            Thread.yield();
+        }
+        for (Thread inputThread : inputThreads) {
+            try {
+                inputThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+        }
+        try {
+            renderThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
