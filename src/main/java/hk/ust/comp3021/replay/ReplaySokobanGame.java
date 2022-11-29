@@ -1,6 +1,7 @@
 package hk.ust.comp3021.replay;
 
 
+import hk.ust.comp3021.actions.Action;
 import hk.ust.comp3021.actions.ActionResult;
 import hk.ust.comp3021.actions.Exit;
 import hk.ust.comp3021.game.AbstractSokobanGame;
@@ -104,6 +105,11 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
 
     // TODO: add any method or field you need.
 
+    private int currentInputEngine = 0;
+
+    private ArrayList<Integer> aliveInputEngines = new ArrayList<>();
+
+    private final Object fetchQueue = new Object();
 
     /**
      * The implementation of the Runnable for each input engine thread.
@@ -131,15 +137,57 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
         @Override
         public void run() {
             // TODO: modify this method to implement the requirements.
-
             while (!shouldStop()) {
-                final var action = inputEngine.fetchAction();
-                final var result = processAction(action);
-                if (result instanceof ActionResult.Failed failed) {
-                    renderingEngine.message(failed.getReason());
+                if (mode == Mode.ROUND_ROBIN) {
+                    synchronized (fetchQueue) {
+                        if (aliveInputEngines.get(currentInputEngine) == index) {
+                            final var action = inputEngine.fetchAction();
+                            if (action instanceof Exit e) {
+                                aliveInputEngines.remove(Integer.valueOf(index));
+                                if (aliveInputEngines.size() == 0) {
+                                    break;
+                                }
+                                currentInputEngine = currentInputEngine % aliveInputEngines.size();
+                                fetchQueue.notifyAll();
+                                break;
+                            }
+                            final var result = syncedProcessAction(action);
+                            if (result instanceof ActionResult.Failed failed) {
+                                synchronized (renderingEngine) {
+                                    renderingEngine.message(failed.getReason());
+                                }
+                            }
+                            currentInputEngine = (currentInputEngine + 1) % aliveInputEngines.size();
+                            fetchQueue.notifyAll();
+                        } else {
+                            try {
+                                fetchQueue.wait();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                } else if (mode == Mode.FREE_RACE) {
+                    final var action = inputEngine.fetchAction();
+                    if (action instanceof Exit e) {
+                        synchronized (aliveInputEngines) {
+                            aliveInputEngines.remove(Integer.valueOf(index));
+                        }
+                        break;
+                    }
+                    final var result = syncedProcessAction(action);
+                    if (result instanceof ActionResult.Failed failed) {
+                        synchronized (renderingEngine) {
+                            renderingEngine.message(failed.getReason());
+                        }
+                    }
                 }
             }
         }
+    }
+
+    private synchronized ActionResult syncedProcessAction(@NotNull Action action) {
+         return processAction(action);
     }
 
     /**
@@ -158,19 +206,22 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
         @Override
         public void run() {
             // TODO: modify this method to implement the requirements.
-
+            double period = 1000 / (float) frameRate;
+            double next = System.currentTimeMillis();
             do {
-                final var undoQuotaMessage = state.getUndoQuota()
-                    .map(it -> String.format(UNDO_QUOTA_TEMPLATE, it))
-                    .orElse(UNDO_QUOTA_UNLIMITED);
-                renderingEngine.message(undoQuotaMessage);
-                renderingEngine.render(state);
-                try {
-                    Thread.sleep(1000 / frameRate);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                if (System.currentTimeMillis() >= next) {
+                    synchronized (state) {
+                        final var undoQuotaMessage = state.getUndoQuota()
+                                .map(it -> String.format(UNDO_QUOTA_TEMPLATE, it))
+                                .orElse(UNDO_QUOTA_UNLIMITED);
+                        synchronized (renderingEngine) {
+                            renderingEngine.message(undoQuotaMessage);
+                            renderingEngine.render(state);
+                        }
+                    }
+                    next += period;
                 }
-            } while (!shouldStop());
+            } while (!shouldStop() && !aliveInputEngines.isEmpty());
         }
     }
 
@@ -182,14 +233,35 @@ public class ReplaySokobanGame extends AbstractSokobanGame {
     @Override
     public void run() {
         // TODO
+        currentInputEngine = 0;
+        for (int i = 0; i < inputEngines.size(); i++) {
+            aliveInputEngines.add(i);
+        }
+        Thread renderingEngineThread = new Thread(new RenderingEngineRunnable());
+        renderingEngineThread.start();
         List<Thread> inputEngineThreads = new ArrayList<>();
         for (int i = 0; i < inputEngines.size(); i++) {
             Thread inputEngineThread = new Thread(new InputEngineRunnable(i, inputEngines.get(i)));
             inputEngineThreads.add(inputEngineThread);
             inputEngineThread.start();
         }
-        Thread renderingEngineThread = new Thread(new RenderingEngineRunnable());
-        renderingEngineThread.start();
+        while (true) {
+            if (shouldStop() || aliveInputEngines.isEmpty()) {
+                for (Thread inputEngineThread : inputEngineThreads) {
+                    try {
+                        inputEngineThread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                try {
+                    renderingEngineThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
     }
 
 }
