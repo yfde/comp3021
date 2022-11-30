@@ -2,7 +2,7 @@ name: Build and Test
 on:
   push:
     branches:
-      - main
+      - PA3
 jobs:
   gradle_build_test:
     name: Gradle build and test
