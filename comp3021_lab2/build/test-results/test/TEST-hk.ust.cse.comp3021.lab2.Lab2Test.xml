@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="hk.ust.cse.comp3021.lab2.Lab2Test" tests="6" skipped="0" failures="0" errors="0" timestamp="2022-09-20T11:01:52" hostname="LAPTOP-17GU182E" time="0.031">
+  <properties/>
+  <testcase name="squareMatrix()" classname="hk.ust.cse.comp3021.lab2.Lab2Test" time="0.016"/>
+  <testcase name="emptyLeft()" classname="hk.ust.cse.comp3021.lab2.Lab2Test" time="0.004"/>
+  <testcase name="nonSquareMatrix()" classname="hk.ust.cse.comp3021.lab2.Lab2Test" time="0.001"/>
+  <testcase name="emptyRight()" classname="hk.ust.cse.comp3021.lab2.Lab2Test" time="0.001"/>
+  <testcase name="nonMatchingMatrix()" classname="hk.ust.cse.comp3021.lab2.Lab2Test" time="0.001"/>
+  <testcase name="bothEmpty()" classname="hk.ust.cse.comp3021.lab2.Lab2Test" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
